@@ -1,21 +1,24 @@
 //
-//  CustomViewController.m
+//  AudioViewController.m
 //  RecordDemo
 //
 //  Created by crystal zhu on 2018/8/24.
 //  Copyright © 2018年 crystal zhu. All rights reserved.
 //
 
-#import "CustomViewController.h"
+#import "AudioViewController.h"
 #import "AudioRecordView.h"
-@interface CustomViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *recordButton;
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (nonatomic,strong)NSArray *recordFileList;
 @end
 
-@implementation CustomViewController
-
+@implementation AudioViewController
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [[Audio shareAudio].audioPlay playerPause];
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

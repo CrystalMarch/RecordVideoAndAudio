@@ -200,8 +200,7 @@
     self.audioCompressionSettings = @{ AVEncoderBitRatePerChannelKey : @(28000),
                                        AVFormatIDKey : @(kAudioFormatMPEG4AAC),
                                        AVNumberOfChannelsKey : @(1),
-                                       AVSampleRateKey : @(8000)
-                                       };
+                                       AVSampleRateKey : @(22050) };
     
     
     _audioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:self.audioCompressionSettings];

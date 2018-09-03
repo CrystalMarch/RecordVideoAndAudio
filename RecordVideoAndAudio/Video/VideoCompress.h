@@ -19,5 +19,5 @@ AVAssetExportPresetHighestQuality  最清晰的画质
 ///默认是AVAssetExportPresetMediumQuality
 - (void)VideoCompress:(AVAsset *)asset needToSavedPhotosAlbum:(BOOL)save presetName:(NSString *)presetName;
 @property(nonatomic,copy) void(^compressionCompletedBlock)(NSURL *);
-@property(nonatomic,copy) void(^compressionFailedBlock)();
+@property(nonatomic,copy) void(^compressionFailedBlock)(void);
 @end

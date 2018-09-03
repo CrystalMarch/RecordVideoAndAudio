@@ -293,7 +293,7 @@
         lame_init_params(lame);
         
         do {
-            read = fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
+            read = (int)fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
             if (read == 0) {
                 write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
             } else {
@@ -314,7 +314,7 @@
         [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
         NSLog(@"MP3转换结束");
         //转换成功之后删除原来的文件
-//        [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
         NSLog(@"2 file size = %lld", [AudioFile AudioGetFileSizeWithFilePath:mp3FilePath]);
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {

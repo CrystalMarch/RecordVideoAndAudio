@@ -58,7 +58,11 @@
             });
             
         }else if (session.status == AVAssetExportSessionStatusFailed){
-            self.compressionFailedBlock();
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.compressionFailedBlock();
+                NSLog(@"视频压缩失败");
+            });
+            
         }
         
     }];

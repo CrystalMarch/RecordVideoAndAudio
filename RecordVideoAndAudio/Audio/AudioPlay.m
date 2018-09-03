@@ -74,11 +74,6 @@
     [self.player pause];
 }
 
-/// 停止播放
-- (void)playerStop
-{
-    
-}
 
 #pragma mark - getter
 

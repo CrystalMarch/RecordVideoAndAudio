@@ -7,17 +7,15 @@
 //
 
 
-#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
-#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 
-#import "ViewController.h"
+#import "ARVideoViewController.h"
 #import "ARRecord.h"
 #import "Video.h"
 #import "RecordProgressView.h"
 #import "PrefixHeader.pch"
 #import "VideoPlayViewController.h"
 //遵循代理
-@interface ViewController () <ARSessionDelegate,ARSCNViewDelegate,VideoDelegate>
+@interface ARVideoViewController () <ARSessionDelegate,ARSCNViewDelegate,VideoDelegate>
 
 @property (nonatomic, strong) IBOutlet ARSCNView *sceneView;
 @property (nonatomic, strong) RecordProgressView *progressView;
@@ -29,9 +27,9 @@
 
 @end
 
-@implementation ViewController
+@implementation ARVideoViewController
 
-#pragma mark ======================================= 生命周期 =======================================
+#pragma mark - 生命周期
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -50,9 +48,11 @@
     [super viewWillDisappear:animated];
     [self.sceneView.session pause];
 }
+- (BOOL)prefersStatusBarHidden{
+    return YES;
+}
 
-
-#pragma mark ======================================= 私有方法 =======================================
+#pragma mark - 私有方法-
 
 
 
@@ -140,6 +140,7 @@
 
 - (void)updateViewWithStop
 {
+    self.recordBtn.selected = NO;
     self.timeView.hidden = YES;
     self.topView.hidden = NO;
     [self changeToStopStyle];
@@ -203,13 +204,23 @@
         NSLog(@"video finish");
     }else if(recordState == RecordStatecompressed){
         NSLog(@"video compressed ");
+    }else if(recordState == RecordStateFail){
+         [self updateViewWithStop];
+         [self showAlertView];
     }
+}
+- (void)showAlertView{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提醒" message:@"视频录制失败,请重新录制..." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        NSLog(@"Cancel Action");
+    }];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 - (void)endMerge:(NSURL *)url {
         VideoPlayViewController *playVC = [[VideoPlayViewController alloc] init];
         playVC.videoUrl =  url;
         [self presentViewController:playVC animated:YES completion:nil];
-    
 }
 
 - (void)updateRecordingProgress:(CGFloat)progress

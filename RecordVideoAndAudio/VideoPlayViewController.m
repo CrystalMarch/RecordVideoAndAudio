@@ -67,10 +67,10 @@
     [object removeObserver:self forKeyPath:@"status"];
 }
 - (void)addVideoTimerObserver{
-    __weak typeof (self)self_ = self;
+    __weak typeof (self)weakSelf = self;
     _timeObser = [_myPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
-        float currentTimeValue = time.value*1.0/time.timescale/self.videoLength;
-        _slider.value = currentTimeValue;
+        float currentTimeValue = time.value*1.0/time.timescale/weakSelf.videoLength;
+        weakSelf.slider.value = currentTimeValue;
     }];
 
 }

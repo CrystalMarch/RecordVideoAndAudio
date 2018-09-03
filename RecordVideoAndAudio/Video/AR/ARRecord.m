@@ -6,8 +6,7 @@
 //  Copyright © 2018年 crystal zhu. All rights reserved.
 //
 
-#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
-#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+
 
 #import "ARRecord.h"
 #import <UIKit/UIKit.h>
@@ -55,9 +54,12 @@
 - (void)setRecordState:(RecordState)recordState{
     if (_recordState != recordState) {
         _recordState = recordState;
-        if (self.delegate && [self.delegate respondsToSelector:@selector(updateRecordState:)]) {
-            [self.delegate  updateRecordState:_recordState];
-        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(updateRecordState:)]) {
+                [self.delegate  updateRecordState:self->_recordState];
+            }
+        });
     }
 }
 #pragma mark - private method
@@ -75,7 +77,7 @@
     self.audioQueue = dispatch_queue_create("l.audio.queue", NULL);
     
     // 设置输出分辨率
-    self.outputSize = CGSizeMake(SCREEN_WIDTH+1, SCREEN_HEIGHT);
+    self.outputSize = CGSizeMake(kScreenWidth+1, kScreenHeight+1);
     
     // 是否是第一次写入
     self.isFirstWriter = YES;
@@ -328,6 +330,10 @@
         self.recordState = RecordStatecompressed;
         [self reset];
     };
+    compress.compressionFailedBlock = ^{
+        self.recordState = RecordStateFail;
+        [self reset];
+    };
     
 }
 #pragma mark - notification
@@ -401,9 +407,10 @@
                                     AVEncoderBitRatePerChannelKey : @(28000),
                                     AVFormatIDKey : @(kAudioFormatLinearPCM),
                                     AVNumberOfChannelsKey : @(1),
-                                    AVSampleRateKey : @(8000),
+                                    AVSampleRateKey : @(22050),
                                     AVLinearPCMIsFloatKey :@(YES),
-                                    AVLinearPCMBitDepthKey:@(8)
+                                    AVLinearPCMBitDepthKey:@(16),
+                                    AVEncoderAudioQualityKey:@(AVAudioQualityHigh)
                                     };
         
         //创建录音器

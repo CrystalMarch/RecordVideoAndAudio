@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F7E2D935213CFCF000912367 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D934213CFCF000912367 /* AppDelegate.m */; };
-		F7E2D938213CFCF000912367 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D937213CFCF000912367 /* ViewController.m */; };
+		F7E2D938213CFCF000912367 /* ARVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D937213CFCF000912367 /* ARVideoViewController.m */; };
 		F7E2D93B213CFCF000912367 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7E2D939213CFCF000912367 /* Main.storyboard */; };
 		F7E2D93D213CFCF100912367 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7E2D93C213CFCF100912367 /* Assets.xcassets */; };
 		F7E2D940213CFCF100912367 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7E2D93E213CFCF100912367 /* LaunchScreen.storyboard */; };
@@ -29,7 +29,7 @@
 		F7E2D991213CFE4300912367 /* Timer.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D98D213CFE4300912367 /* Timer.m */; };
 		F7E2D994213CFE7600912367 /* VideoPlayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D993213CFE7600912367 /* VideoPlayViewController.m */; };
 		F7E2D996213CFF3500912367 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = F7E2D995213CFF3500912367 /* art.scnassets */; };
-		F7E2D99F213D03F000912367 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D999213D03EF00912367 /* CustomViewController.m */; };
+		F7E2D99F213D03F000912367 /* AudioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D999213D03EF00912367 /* AudioViewController.m */; };
 		F7E2D9A0213D03F000912367 /* VideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D99A213D03EF00912367 /* VideoViewController.m */; };
 		F7E2D9A1213D03F000912367 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D99B213D03EF00912367 /* MainViewController.m */; };
 		F7E2D9A2213D03F000912367 /* VideoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D99E213D03F000912367 /* VideoTableViewController.m */; };
@@ -62,8 +62,8 @@
 		F7E2D930213CFCF000912367 /* RecordVideoAndAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordVideoAndAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7E2D933213CFCF000912367 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F7E2D934213CFCF000912367 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		F7E2D936213CFCF000912367 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		F7E2D937213CFCF000912367 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		F7E2D936213CFCF000912367 /* ARVideoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARVideoViewController.h; sourceTree = "<group>"; };
+		F7E2D937213CFCF000912367 /* ARVideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARVideoViewController.m; sourceTree = "<group>"; };
 		F7E2D93A213CFCF000912367 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F7E2D93C213CFCF100912367 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F7E2D93F213CFCF100912367 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -105,8 +105,8 @@
 		F7E2D993213CFE7600912367 /* VideoPlayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayViewController.m; sourceTree = "<group>"; };
 		F7E2D995213CFF3500912367 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		F7E2D997213D03EF00912367 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		F7E2D998213D03EF00912367 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
-		F7E2D999213D03EF00912367 /* CustomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewController.m; sourceTree = "<group>"; };
+		F7E2D998213D03EF00912367 /* AudioViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioViewController.h; sourceTree = "<group>"; };
+		F7E2D999213D03EF00912367 /* AudioViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioViewController.m; sourceTree = "<group>"; };
 		F7E2D99A213D03EF00912367 /* VideoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewController.m; sourceTree = "<group>"; };
 		F7E2D99B213D03EF00912367 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		F7E2D99C213D03F000912367 /* VideoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewController.h; sourceTree = "<group>"; };
@@ -182,16 +182,16 @@
 				F7E2D965213CFD0000912367 /* Video */,
 				F7E2D933213CFCF000912367 /* AppDelegate.h */,
 				F7E2D934213CFCF000912367 /* AppDelegate.m */,
-				F7E2D998213D03EF00912367 /* CustomViewController.h */,
-				F7E2D999213D03EF00912367 /* CustomViewController.m */,
+				F7E2D998213D03EF00912367 /* AudioViewController.h */,
+				F7E2D999213D03EF00912367 /* AudioViewController.m */,
 				F7E2D997213D03EF00912367 /* MainViewController.h */,
 				F7E2D99B213D03EF00912367 /* MainViewController.m */,
 				F7E2D99D213D03F000912367 /* VideoTableViewController.h */,
 				F7E2D99E213D03F000912367 /* VideoTableViewController.m */,
 				F7E2D99C213D03F000912367 /* VideoViewController.h */,
 				F7E2D99A213D03EF00912367 /* VideoViewController.m */,
-				F7E2D936213CFCF000912367 /* ViewController.h */,
-				F7E2D937213CFCF000912367 /* ViewController.m */,
+				F7E2D936213CFCF000912367 /* ARVideoViewController.h */,
+				F7E2D937213CFCF000912367 /* ARVideoViewController.m */,
 				F7E2D992213CFE7600912367 /* VideoPlayViewController.h */,
 				F7E2D993213CFE7600912367 /* VideoPlayViewController.m */,
 				F7E2D988213CFDCE00912367 /* PrefixHeader.pch */,
@@ -449,10 +449,10 @@
 				F7E2D9A0213D03F000912367 /* VideoViewController.m in Sources */,
 				F7E2D9AF213D050D00912367 /* AudioFile.m in Sources */,
 				F7E2D96D213CFD4B00912367 /* VideoView.m in Sources */,
-				F7E2D99F213D03F000912367 /* CustomViewController.m in Sources */,
+				F7E2D99F213D03F000912367 /* AudioViewController.m in Sources */,
 				F7E2D984213CFD7400912367 /* VideoCompress.m in Sources */,
 				F7E2D9A1213D03F000912367 /* MainViewController.m in Sources */,
-				F7E2D938213CFCF000912367 /* ViewController.m in Sources */,
+				F7E2D938213CFCF000912367 /* ARVideoViewController.m in Sources */,
 				F7E2D9B2213D050D00912367 /* AudioRecord.m in Sources */,
 				F7E2D97F213CFD7400912367 /* VideoFile.m in Sources */,
 				F7E2D98F213CFE4300912367 /* CALayer+XibBorderColor.m in Sources */,
@@ -557,7 +557,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

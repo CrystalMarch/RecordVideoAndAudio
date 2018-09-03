@@ -114,12 +114,20 @@
 - (void)setUpAudio{
     // 2.2 获取音频输入设备
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_10_0
-    AVCaptureDeviceDiscoverySession *captureDeviceDiscoverySession = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionBack];
-    AVCaptureDevice *audioCaptureDevice = [[captureDeviceDiscoverySession devices] firstObject];
+    /*
+     可以通过以下方式获得前置摄像头：
+     [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionFront]
+     后置摄像头：
+     [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionBack]
+     和麦克风：
+    [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInMicrophone mediaType:AVMediaTypeAudio position:AVCaptureDevicePositionUnspecified]
+
+    */
+    //ios 10 以后获取麦克风
+    AVCaptureDevice *audioCaptureDevice = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInMicrophone mediaType:AVMediaTypeAudio position:AVCaptureDevicePositionUnspecified];
 #else
     AVCaptureDevice *audioCaptureDevice = [[AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio] firstObject];
 #endif
-    
     NSError *error = nil;
     // 2.4 创建音频输入源
     self.audioInput = [[AVCaptureDeviceInput alloc] initWithDevice:audioCaptureDevice error:&error];
@@ -256,14 +264,12 @@
 
 #pragma mark - 获取摄像头
 - (AVCaptureDevice *)getCameraDeviceWithPosition:(AVCaptureDevicePosition)position{
+    
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_10_0
-    AVCaptureDeviceDiscoverySession *devicesIOS10 = [AVCaptureDeviceDiscoverySession  discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera] mediaType:AVMediaTypeVideo position:position];
-    NSArray *devicesIOS  = devicesIOS10.devices;
-    for (AVCaptureDevice *device in devicesIOS) {
-        if ([device position] == position) {
-            return device;
-        }
-    }
+    
+   AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera mediaType:AVMediaTypeVideo position:position];
+    return device;
+
 #else
     NSArray *cameras = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *camera in cameras) {
@@ -334,6 +340,7 @@
     [self saveVideo];
 }
 - (void)saveVideo{
+    
     if (_needCompress) {
         //压缩并保存压缩后的视频到手机相册
         VideoCompress *compress = [[VideoCompress alloc] init];
@@ -342,12 +349,19 @@
             [self finishCompress:url];
             [[NSFileManager defaultManager] removeItemAtPath:self.videoUrl.path error:nil];
         };
+        compress.compressionFailedBlock = ^{
+            NSLog(@"视频压缩失败");
+            [self saveUnCompressVideo];
+        };
     }else{
-        [self finishCompress:self.videoUrl];
-        if (_needToSavedPhotosAlbum) {
-            //保存未压缩的视频到手机相册
-            UISaveVideoAtPathToSavedPhotosAlbum(self.videoUrl.path, nil, nil, nil);
-        }
+        [self saveUnCompressVideo];
+    }
+}
+- (void)saveUnCompressVideo{
+    [self finishCompress:self.videoUrl];
+    if (_needToSavedPhotosAlbum) {
+        //保存未压缩的视频到手机相册
+        UISaveVideoAtPathToSavedPhotosAlbum(self.videoUrl.path, nil, nil, nil);
     }
 }
 -(void)finishCompress:(NSURL *)videoUrl{

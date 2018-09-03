@@ -14,7 +14,7 @@
 #import "Timer.h"
 #import "UIColor+Hex.h"
 //video
-#define VIDEO_RECORD_MAX_TIME 30.0           //视频最长录制时间
+#define VIDEO_RECORD_MAX_TIME 15.0           //视频最长录制时间
 #define VIDEO_TIMER_INTERVAL 0.05         //视频计时器刷新频率
 
 #define AUDIO_RECORD_MAX_TIME 60.0  //音频最长录制时间

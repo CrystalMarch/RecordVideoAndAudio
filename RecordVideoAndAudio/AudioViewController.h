@@ -1,5 +1,5 @@
 //
-//  CustomViewController.h
+//  AudioViewController.h
 //  RecordDemo
 //
 //  Created by crystal zhu on 2018/8/24.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CustomViewController : UIViewController
+@interface AudioViewController : UIViewController
 
 @end
