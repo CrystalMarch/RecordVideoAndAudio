@@ -35,6 +35,7 @@
 
 @property (nonatomic, strong) CADisplayLink * displayLink;
 @property(nonatomic,assign)CGFloat recordTime;
+
 @property (nonatomic, strong) AVAudioSession * recordingSession;
 @property (nonatomic, strong) AVAudioRecorder * audioRecorder;
 
@@ -332,7 +333,7 @@
     };
     compress.compressionFailedBlock = ^{
         self.recordState = RecordStateFail;
-        [self reset];
+        [self performSelector:@selector(reset) withObject:self afterDelay:0.1];
     };
     
 }

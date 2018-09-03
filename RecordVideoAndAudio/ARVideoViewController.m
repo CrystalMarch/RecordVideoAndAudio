@@ -210,11 +210,19 @@
     }
 }
 - (void)showAlertView{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提醒" message:@"视频录制失败,请重新录制..." preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        NSLog(@"Cancel Action");
-    }];
-    [alert addAction:cancelAction];
+    //    //初始化警告框
+    UIAlertController*alert = [UIAlertController
+                               alertControllerWithTitle: @"提示"
+                               message: @"视频录制失败，请重新录制..."
+                               preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addAction:[UIAlertAction
+                      actionWithTitle:@"知道了"
+                      style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action)
+                      {
+                      }]];
+    
+    //弹出提示框
     [self presentViewController:alert animated:YES completion:nil];
 }
 - (void)endMerge:(NSURL *)url {

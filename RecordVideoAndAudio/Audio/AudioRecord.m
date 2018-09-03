@@ -17,7 +17,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface AudioRecord () <AVAudioRecorderDelegate>
-@property (nonatomic, strong) NSMutableDictionary *recorderDict; // 录音设置
+@property (nonatomic, strong) NSDictionary *recorderDict; // 录音设置
 @property (nonatomic, strong) AVAudioRecorder *recorder; // 录音
 @property (nonatomic, strong) NSString *recorderFilePath;
 
@@ -56,18 +56,20 @@
 
 #pragma mark - getter
 
-- (NSMutableDictionary *)recorderDict
+- (NSDictionary *)recorderDict
 {
-    if (_recorderDict == nil) {
-        // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
-        _recorderDict = [NSMutableDictionary dictionary];
-        // kAudioFormatMPEG4AAC ：xxx.acc；kAudioFormatLinearPCM ：xxx.caf
-        [_recorderDict setValue:[NSNumber numberWithInt:kAudioFormatLinearPCM] forKey:AVFormatIDKey];
-        [_recorderDict setValue:[NSNumber numberWithInt:16000] forKey:AVSampleRateKey];
-        [_recorderDict setValue:[NSNumber numberWithInt:2] forKey:AVNumberOfChannelsKey];
-        [_recorderDict setValue:[NSNumber numberWithInt:16] forKey:AVLinearPCMBitDepthKey];
-        [_recorderDict setValue:[NSNumber numberWithInt:AVAudioQualityHigh] forKey:AVEncoderAudioQualityKey];
-    }
+    // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
+    // kAudioFormatMPEG4AAC ：xxx.acc；kAudioFormatLinearPCM ：xxx.caf
+    _recorderDict  = @{
+                                AVEncoderBitRatePerChannelKey : @(28000),
+                                AVFormatIDKey : @(kAudioFormatLinearPCM),
+                                AVNumberOfChannelsKey : @(1),
+                                AVSampleRateKey : @(16000),
+                                AVLinearPCMIsFloatKey :@(YES),
+                                AVLinearPCMBitDepthKey:@(16),
+                                AVEncoderAudioQualityKey:@(AVAudioQualityHigh)
+                                };
+
     return _recorderDict;
 }
 
@@ -293,7 +295,7 @@
         lame_init_params(lame);
         
         do {
-            read = (int)fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
+            read =fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
             if (read == 0) {
                 write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
             } else {
@@ -315,6 +317,7 @@
         NSLog(@"MP3转换结束");
         //转换成功之后删除原来的文件
         [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
+        
         NSLog(@"2 file size = %lld", [AudioFile AudioGetFileSizeWithFilePath:mp3FilePath]);
         
         if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
