@@ -3,5 +3,5 @@
 
 
 ### Effect picture
-![alt text](https://github.com/CrystalMarch/RecordVideoAndAudio/blob/master/demo_1.gif)
-![alt text](https://github.com/CrystalMarch/RecordVideoAndAudio/blob/master/demo_2.gif)
+![alt text](https://github.com/CrystalMarch/RecordVideoAndAudio/blob/master/demo.gif)
+
