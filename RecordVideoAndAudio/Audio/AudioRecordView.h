@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "Audio.h"
+
+@protocol AudioRecordViewDelegate<NSObject>
+- (void)audioFinshConvert;
+@end
+
 @interface AudioRecordView : UIView
+@property (nonatomic,weak)id <AudioRecordViewDelegate> delegate;
 + (AudioRecordView *)share;
 - (void)startRecord;
 - (void)finishedRecord;

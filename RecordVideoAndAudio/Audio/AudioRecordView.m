@@ -103,8 +103,17 @@
       [self removeFromSuperview];
 }
 - (void)finishedRecord{
-    [self disappear];
-    [self saveRecorder];
+    
+    NSTimeInterval fileTime = [[Audio shareAudio].audioRecord recorderDurationWithFilePath:self.filePath];
+    if (fileTime <1) {
+        [self timeWarning];
+        [[Audio shareAudio].audioRecord deleteRecording];
+        [self performSelector:@selector(disappear) withObject:self afterDelay:0.5];
+    }else{
+        [self disappear];
+        [self saveRecorder];
+    }
+    
 }
 - (void)cancelRecord{
      [self disappear];
@@ -138,18 +147,12 @@
 // 停止录音，并保存
 - (void)saveRecorder
 {
-    [[Audio shareAudio].audioRecord recorderStop];
     // 保存音频信息
     if (!self.array)
     {
         self.array = [[NSMutableArray alloc] init];
     }
-    NSTimeInterval fileTime = [[Audio shareAudio].audioRecord recorderDurationWithFilePath:self.filePath];
-    if (fileTime <1) {
-        [self timeWarning];
-        [[Audio shareAudio].audioRecord deleteRecording];
-    }
-
+    [[Audio shareAudio].audioRecord recorderStop];
 }
 
 #pragma mark 录音
@@ -181,7 +184,11 @@
         }
     }
 }
-
+- (void)recordFinshConvert:(BOOL)result{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioFinshConvert)]) {
+        [self.delegate audioFinshConvert];
+    }
+}
 
 
 @end

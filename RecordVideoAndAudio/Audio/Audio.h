@@ -17,7 +17,7 @@
 #import "Timer.h"
 #import "AudioRecord.h"
 #import "AudioPlay.h"
-
+#import "AudioConver.h"
 @interface Audio : NSObject
 
 + (Audio *)shareAudio;

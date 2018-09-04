@@ -12,12 +12,11 @@
 #import "lame.h"
 #import "AudioFile.h"
 #import "Timer.h"
-
+#import "AudioConver.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
 
 @interface AudioRecord () <AVAudioRecorderDelegate>
-@property (nonatomic, strong) NSDictionary *recorderDict; // 录音设置
 @property (nonatomic, strong) AVAudioRecorder *recorder; // 录音
 @property (nonatomic, strong) NSString *recorderFilePath;
 
@@ -43,11 +42,7 @@
     [self recorderStop];
     [self stopVoiceTimer];
     [self stopTimecountTimer];
-    
-    if (self.recorderDict) {
-        self.recorderDict = nil;
-    }
-    
+
     if (self.recorder) {
         self.recorder.delegate = nil;
         self.recorder = nil;
@@ -58,19 +53,13 @@
 
 - (NSDictionary *)recorderDict
 {
-    // 参数设置 格式、采样率、录音通道、线性采样位数、录音质量
-    // kAudioFormatMPEG4AAC ：xxx.acc；kAudioFormatLinearPCM ：xxx.caf
-    _recorderDict  = @{
-                                AVEncoderBitRatePerChannelKey : @(28000),
-                                AVFormatIDKey : @(kAudioFormatLinearPCM),
-                                AVNumberOfChannelsKey : @(1),
-                                AVSampleRateKey : @(16000),
-                                AVLinearPCMIsFloatKey :@(YES),
-                                AVLinearPCMBitDepthKey:@(16),
-                                AVEncoderAudioQualityKey:@(AVAudioQualityHigh)
-                                };
-
-    return _recorderDict;
+    NSMutableDictionary *dicM = [NSMutableDictionary dictionary];
+    [dicM setObject:@(kAudioFormatLinearPCM) forKey:AVFormatIDKey];
+    [dicM setObject:@(ETRECORD_RATE) forKey:AVSampleRateKey];
+    [dicM setObject:@(2) forKey:AVNumberOfChannelsKey];
+    [dicM setObject:@(16) forKey:AVLinearPCMBitDepthKey];
+    [dicM setObject:[NSNumber numberWithInt:AVAudioQualityMin] forKey:AVEncoderAudioQualityKey];
+    return dicM;
 }
 
 #pragma mark - 录音
@@ -97,7 +86,7 @@
     
     // 生成录音文件
     NSURL *urlAudioRecorder = [NSURL fileURLWithPath:filePath];
-    self.recorder = [[AVAudioRecorder alloc] initWithURL:urlAudioRecorder settings:self.recorderDict error:nil];
+    self.recorder = [[AVAudioRecorder alloc] initWithURL:urlAudioRecorder settings:[self recorderDict] error:nil];
     
     // 开启音量检测
     self.recorder.meteringEnabled = YES;
@@ -275,55 +264,18 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(recordBeginConvert)]) {
         [self.delegate recordBeginConvert];
     }
-    
-    @try {
-        int read;
-        int write;
-        
-        FILE *pcm = fopen([cafFilePath cStringUsingEncoding:1], "rb");  //source 被转换的音频文件位置
-        fseek(pcm, 4 * 1024, SEEK_CUR);                                   //skip file header
-        FILE *mp3 = fopen([mp3FilePath cStringUsingEncoding:1], "wb");  //output 输出生成的Mp3文件位置
-        
-        const int PCM_SIZE = 8192;
-        const int MP3_SIZE = 8192;
-        short int pcm_buffer[PCM_SIZE*2];
-        unsigned char mp3_buffer[MP3_SIZE];
-        
-        lame_t lame = lame_init();
-        lame_set_in_samplerate(lame, 16000); // 采样率不对，编出来的声音完全不对
-        lame_set_VBR(lame, vbr_default);
-        lame_init_params(lame);
-        
-        do {
-            read =fread(pcm_buffer, 2 * sizeof(short int), PCM_SIZE, pcm);
-            if (read == 0) {
-                write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
-            } else {
-                write = lame_encode_buffer_interleaved(lame, pcm_buffer, read, mp3_buffer, MP3_SIZE);
-            }
-            
-            fwrite(mp3_buffer, write, 1, mp3);
-            
-        } while (read != 0);
-        
-        lame_close(lame);
-        fclose(mp3);
-        fclose(pcm);
-    } @catch (NSException *exception) {
-        NSLog(@"%@", [exception description]);
-        mp3FilePath = nil;
-    } @finally {
-        [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
-        NSLog(@"MP3转换结束");
-        //转换成功之后删除原来的文件
-        [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
-        
-        NSLog(@"2 file size = %lld", [AudioFile AudioGetFileSizeWithFilePath:mp3FilePath]);
-        
-        if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
-            [self.delegate recordFinshConvert:mp3FilePath];
+    [AudioConver conventToMp3WithCafFilePath:cafFilePath mp3FilePath:mp3FilePath sampleRate:ETRECORD_RATE callback:^(BOOL result) {
+        if (result) {
+            NSLog(@"-----\n  MP3生成成功: %@   -----  \n", mp3FilePath);
+            [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
+            NSLog(@"MP3转换结束");
+            //转换成功之后删除原来的文件
+            [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
         }
-    }
+        if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
+            [self.delegate recordFinshConvert:result];
+        }
+    }];
 }
 
 #pragma mark - 代理

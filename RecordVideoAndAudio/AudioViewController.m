@@ -8,7 +8,7 @@
 
 #import "AudioViewController.h"
 #import "AudioRecordView.h"
-@interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioDelegate>
+@interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioRecordViewDelegate>
 @property (weak, nonatomic) IBOutlet UIButton *recordButton;
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (nonatomic,strong)NSArray *recordFileList;
@@ -37,13 +37,13 @@
     [_recordButton addTarget:self action:@selector(recordButtonTouchUpOutside) forControlEvents:UIControlEventTouchUpOutside];
     [_recordButton addTarget:self action:@selector(recordButtonTouchDragExit) forControlEvents:UIControlEventTouchDragExit];
     [_recordButton addTarget:self action:@selector(recordButtonTouchDragEnter) forControlEvents:UIControlEventTouchDragEnter];
+    [AudioRecordView share].delegate = self;
 }
 - (void)recordButtonTouchDown{
     [[AudioRecordView share] startRecord];
 }
 - (void)recordButtonTouchUpInside{
     [[AudioRecordView share] finishedRecord];
-    [self refreshDataSource];
 }
 - (void)recordButtonTouchUpOutside{
     [[AudioRecordView share] cancelRecord];
@@ -69,7 +69,7 @@
     [dict setValue:fileName forKey:@"FileName"];
     long long fileSize = [AudioFile AudioGetFileSizeWithFilePath:filePath];
     [dict setValue:@(fileSize) forKey:@"FileSize"];
-    NSTimeInterval fileTime = [[Audio shareAudio].audioRecord recorderDurationWithFilePath:filePath];
+    int fileTime = [AudioFile getVideoInfoWithSourcePath:filePath];
     [dict setValue:@(fileTime) forKey:@"FileTime"];
     return dict;
 }
@@ -81,9 +81,9 @@
     NSString *filePath = dict[@"FilePath"];
     NSNumber *fileTime = dict[@"FileTime"];
     if ([fileSize floatValue]/(1024.0*1024) > 1) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fM  %.2fs)", fileName, [fileSize floatValue]/(1024.0*1024),fileTime.doubleValue];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fM  %ds)", fileName, [fileSize floatValue]/(1024.0*1024),fileTime.intValue];
     }else{
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fkb %.2fs)", fileName, [fileSize floatValue]/1024,fileTime.doubleValue];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fkb %ds)", fileName, [fileSize floatValue]/1024,fileTime.intValue];
     }
     
     cell.detailTextLabel.text = filePath;
@@ -110,6 +110,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+#pragma mark - audio delegate
 
-
+- (void)audioFinshConvert{
+    [self refreshDataSource];
+}
 @end

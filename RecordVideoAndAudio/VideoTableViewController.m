@@ -51,6 +51,8 @@
     [dict setValue:fileName forKey:@"FileName"];
     long long fileSize = [VideoFile VideoGetFileSizeWithFilePath:filePath];
     [dict setValue:@(fileSize) forKey:@"FileSize"];
+    int fileTime = [VideoFile getVideoInfoWithSourcePath:filePath];
+    [dict setValue:@(fileTime) forKey:@"FileTime"];
     return dict;
 }
 
@@ -61,10 +63,11 @@
     NSDictionary *dict = [self getAudioInfo:fileName];
     NSNumber *fileSize = dict[@"FileSize"];
     NSString *filePath = dict[@"FilePath"];
+    NSNumber *fileTime = dict[@"FileTime"];
     if ([fileSize floatValue]/(1024.0*1024) > 1) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fM )", fileName, [fileSize floatValue]/(1024.0*1024)];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fM  %ds)", fileName, [fileSize floatValue]/(1024.0*1024),fileTime.intValue];
     }else{
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fkb)", fileName, [fileSize floatValue]/1024];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fkb %ds)", fileName, [fileSize floatValue]/1024,fileTime.intValue];
     }
     
     cell.detailTextLabel.text = filePath;

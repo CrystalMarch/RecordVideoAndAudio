@@ -29,13 +29,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.view.backgroundColor = [UIColor blackColor];
     self.item = [AVPlayerItem playerItemWithURL:self.videoUrl];
     self.myPlayer = [AVPlayer playerWithPlayerItem:self.item];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.myPlayer];
     self.playerLayer.frame = self.view.bounds;
     [self.view.layer addSublayer:self.playerLayer];
-    [self.myPlayer play];
+    [self.myPlayer performSelector:@selector(play) withObject:self.myPlayer afterDelay:0.5];
     //通过KVO来观察status属性的变化，来获取播放之前的错误信息
     [self.item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     [self addVideoTimerObserver];

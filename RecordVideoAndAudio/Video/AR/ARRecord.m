@@ -265,9 +265,7 @@
             [self merge];
         }];
     }
-    
 }
-
 - (void)merge {
     
     AVMutableComposition * mixComposition = [[AVMutableComposition alloc]init];
@@ -408,7 +406,7 @@
                                     AVEncoderBitRatePerChannelKey : @(28000),
                                     AVFormatIDKey : @(kAudioFormatLinearPCM),
                                     AVNumberOfChannelsKey : @(1),
-                                    AVSampleRateKey : @(22050),
+                                    AVSampleRateKey : @(ETRECORD_RATE),
                                     AVLinearPCMIsFloatKey :@(YES),
                                     AVLinearPCMBitDepthKey:@(16),
                                     AVEncoderAudioQualityKey:@(AVAudioQualityHigh)

@@ -144,23 +144,24 @@
 }
 - (void)setUpPreviewLayerWithType:(VideoViewType)type{
     CGRect rect = CGRectZero;
-    //此处宽高+1是为了去除录制好的视频有绿边
-
     switch (type) {
         case Type1X1:
-            rect = CGRectMake(0, 0, kScreenWidth+1, kScreenWidth+1);
+            rect = CGRectMake(0, (kScreenHeight - kScreenWidth)/2, kScreenWidth, kScreenWidth);
             break;
         case Type4X3:
-            rect = CGRectMake(0, 0, kScreenWidth+1, kScreenWidth*4/3+1);
+            rect = CGRectMake(0, (kScreenHeight - kScreenWidth*4/3)/2, kScreenWidth, kScreenWidth*4/3);
             break;
         case TypeFullScreen:
-            rect = CGRectMake(0, 0, kScreenWidth+1, kScreenHeight+1);
+            rect = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
             break;
         default:
-            rect = CGRectMake(0, 0, kScreenWidth+1, kScreenHeight+1);
+            rect = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
             break;
     }
     self.previewLayer.frame = rect;
+    if (self.previewLayer.superlayer) {
+         [self.previewLayer removeFromSuperlayer];
+    }
     [_superView.layer insertSublayer:self.previewLayer atIndex:0];
 }
 - (void)setUpWriter{
@@ -226,6 +227,20 @@
     };
     if (self.delegate && [self.delegate respondsToSelector:@selector(updateFlashState:)]) {
         [self.delegate updateFlashState:_flashState];
+    }
+}
+- (void)changeScreenScale{
+    if (_viewType == TypeFullScreen) {
+        _viewType = Type4X3;
+    } else if (_viewType == Type4X3){
+        _viewType = Type1X1;
+    }else{
+        _viewType = TypeFullScreen;
+    }
+    [self setUpPreviewLayerWithType:_viewType];
+    [self setUpWriter];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(updateScreenScale:)]) {
+        [self.delegate updateScreenScale:_viewType];
     }
 }
 - (void)startRecord

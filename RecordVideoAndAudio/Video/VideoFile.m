@@ -7,7 +7,7 @@
 //
 
 #import "VideoFile.h"
-
+#import <AVFoundation/AVFoundation.h>
 @implementation VideoFile
 
 + (NSString *)libCachePath
@@ -69,4 +69,10 @@
     return 0.0;
 }
 
++ (int)getVideoInfoWithSourcePath:(NSString *)path{
+    AVURLAsset * asset = [AVURLAsset assetWithURL:[NSURL fileURLWithPath:path]];
+    CMTime   time = [asset duration];
+    int seconds = ceil(time.value/time.timescale);
+    return seconds;
+}
 @end

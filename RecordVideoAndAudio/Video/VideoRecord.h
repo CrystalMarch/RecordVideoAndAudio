@@ -21,6 +21,7 @@
 - (instancetype)initWithVideoViewType:(VideoViewType)type superView:(UIView *)superView;
 - (void)turnCameraAction;
 - (void)switchFlash;
+- (void)changeScreenScale;
 - (void)startRecord;
 - (void)stopRecord;
 - (void)reset;

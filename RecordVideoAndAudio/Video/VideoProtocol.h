@@ -49,4 +49,6 @@ typedef NS_ENUM(NSInteger, VideoViewType) {
 
 - (void)updateFlashState:(FlashState)state;
 
+- (void)updateScreenScale:(VideoViewType)type;
+
 @end

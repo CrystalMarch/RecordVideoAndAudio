@@ -30,5 +30,6 @@
 
 ///获取文件名
 +(NSString *)VideoGetFileNameWithPath:(NSString *)filePath type:(BOOL)hasFileType;
-
+//获取视频文件时长
++ (int)getVideoInfoWithSourcePath:(NSString *)path;
 @end

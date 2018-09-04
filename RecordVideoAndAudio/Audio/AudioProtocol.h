@@ -22,7 +22,7 @@
 /// 开始压缩录音
 - (void)recordBeginConvert;
 /// 结束压缩录音
-- (void)recordFinshConvert:(NSString *)filePath;
+- (void)recordFinshConvert:(BOOL)result;
 
 /// 开始播放音频（状态：加载中、加载失败、加载成功正在播放、未知）
 - (void)audioPlayBegined:(AVPlayerItemStatus)state;

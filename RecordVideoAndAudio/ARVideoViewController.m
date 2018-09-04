@@ -186,7 +186,7 @@
     [Video shareVideo].arRecord.delegate = self;
     [Video shareVideo].arRecord.renderer.scene = self.sceneView.scene;
     [Video shareVideo].arRecord.needToSavedPhotosAlbum = YES;
-    [Video shareVideo].arRecord.needCompress = YES;
+    [Video shareVideo].arRecord.needCompress = NO;
     
 }
 

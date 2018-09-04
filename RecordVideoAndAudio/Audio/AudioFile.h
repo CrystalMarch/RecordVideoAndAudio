@@ -25,5 +25,6 @@
 
 /// 删除文件
 + (void)AudioDeleteFileWithFilePath:(NSString *)filePath;
-
+///音频时长
++ (int)getVideoInfoWithSourcePath:(NSString *)path;
 @end

@@ -17,8 +17,25 @@
 #define VIDEO_RECORD_MAX_TIME 15.0           //视频最长录制时间
 #define VIDEO_TIMER_INTERVAL 0.05         //视频计时器刷新频率
 
-#define AUDIO_RECORD_MAX_TIME 60.0  //音频最长录制时间
+#define AUDIO_RECORD_MAX_TIME 10.0  //音频最长录制时间
 #define AUDIO_TIMER_INTERVAL 1.0            //音频计时器刷新频率
+/*
+ 音频
+ 在数字音频领域，常用的采样率有：
+ 8,000 Hz - 电话所用采样率, 对于人的说话已经足够
+ 11,025 Hz
+ 22,050 Hz - 无线电广播所用采样率
+ 32,000 Hz - miniDV 数码视频 camcorder、DAT (LP mode)所用采样率
+ 44,100 Hz - 音频CD, 也常用于MPEG-1 音频（VCD, SVCD, MP3）所用采样率
+ 47,250 Hz - Nippon Columbia (Denon)开发的世界上第一个商用 PCM 录音机所用采样率
+ 48,000 Hz - miniDV、数字电视、DVD、DAT、电影和专业音频所用的数字声音所用采样率
+ 50,000 Hz - 二十世纪七十年代后期出现的3M 和Soundstream 开发的第一款商用数字录音机所用采样率
+ 50,400 Hz - 三菱 X-80 数字录音机所用所用采样率
+ 96,000 或者 192,000 Hz - DVD-Audio、一些 LPCM DVD 音轨、BD-ROM（蓝光盘）音轨、和 HD-DVD （高清晰度 DVD）音轨所用所用采样率
+ 2.8224 MHz - SACD、索尼 和 飞利浦 联合开发的称为Direct Stream Digital的1位sigma-delta modulation 过程所用采样率。
+ */
+#define ETRECORD_RATE 22050.0
+
 
 #define VIDEO_FOLDER @"videoFolder" //视频录制存放文件夹
 #define AUDIO_FOLDER @"audioFolder"//音频录制存放文件夹

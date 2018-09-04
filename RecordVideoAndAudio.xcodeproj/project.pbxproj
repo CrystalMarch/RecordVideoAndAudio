@@ -39,6 +39,7 @@
 		F7E2D9B2213D050D00912367 /* AudioRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D9AD213D050D00912367 /* AudioRecord.m */; };
 		F7E2D9B3213D050D00912367 /* AudioPlay.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D9AE213D050D00912367 /* AudioPlay.m */; };
 		F7E2D9B9213D055F00912367 /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7E2D9B5213D051700912367 /* libmp3lame.a */; };
+		F7E2D9C5213E419E00912367 /* AudioConver.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D9C4213E419E00912367 /* AudioConver.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,8 @@
 		F7E2D9AE213D050D00912367 /* AudioPlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlay.m; sourceTree = "<group>"; };
 		F7E2D9B5213D051700912367 /* libmp3lame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmp3lame.a; sourceTree = "<group>"; };
 		F7E2D9B6213D051700912367 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+		F7E2D9C3213E419E00912367 /* AudioConver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioConver.h; sourceTree = "<group>"; };
+		F7E2D9C4213E419E00912367 /* AudioConver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioConver.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -284,6 +287,8 @@
 				F7E2D9B4213D051700912367 /* lame */,
 				F7E2D9AA213D050C00912367 /* Audio.h */,
 				F7E2D9AC213D050C00912367 /* Audio.m */,
+				F7E2D9C3213E419E00912367 /* AudioConver.h */,
+				F7E2D9C4213E419E00912367 /* AudioConver.m */,
 				F7E2D9A8213D050C00912367 /* AudioFile.h */,
 				F7E2D9A4213D050B00912367 /* AudioFile.m */,
 				F7E2D9A9213D050C00912367 /* AudioPlay.h */,
@@ -465,6 +470,7 @@
 				F7E2D943213CFCF100912367 /* main.m in Sources */,
 				F7E2D9B3213D050D00912367 /* AudioPlay.m in Sources */,
 				F7E2D980213CFD7400912367 /* VideoRecord.m in Sources */,
+				F7E2D9C5213E419E00912367 /* AudioConver.m in Sources */,
 				F7E2D990213CFE4300912367 /* UIColor+Hex.m in Sources */,
 				F7E2D987213CFD8200912367 /* ARRecord.m in Sources */,
 				F7E2D9B1213D050D00912367 /* Audio.m in Sources */,
@@ -560,7 +566,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -618,7 +624,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UILabel *timelabel;
 @property (nonatomic, strong) UIButton *turnCamera;
 @property (nonatomic, strong) UIButton *flashBtn;
+@property (nonatomic, strong) UIButton *screenBtn;
 @property (nonatomic, strong) RecordProgressView *progressView;
 @property (nonatomic, strong) UIButton *recordBtn;
 @property (nonatomic, assign) CGFloat recordTime;
@@ -94,6 +95,17 @@
     [self.flashBtn sizeToFit];
     [self.topView addSubview:self.flashBtn];
     
+    self.screenBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.screenBtn.frame = CGRectMake(kScreenWidth - 160, 10, 40, 24);
+    self.screenBtn.layer.masksToBounds = YES;
+    self.screenBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+    self.screenBtn.layer.borderWidth = 1;
+    self.screenBtn.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.screenBtn.layer.cornerRadius = 2;
+    [self.screenBtn setTitle:@"16:9" forState:UIControlStateNormal];
+    [self.screenBtn addTarget:self action:@selector(screenScaleAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.topView addSubview:self.screenBtn];
+    
     
     self.progressView = [[RecordProgressView alloc] initWithFrame:CGRectMake((kScreenWidth - 62)/2, kScreenHeight - 32 - 62, 62, 62)];
     self.progressView.backgroundColor = [UIColor clearColor];
@@ -163,7 +175,10 @@
 {
     [self.videoRecord switchFlash];
 }
-
+-(void)screenScaleAction
+{
+    [self.videoRecord changeScreenScale];
+}
 - (void)startRecord
 {
     if (self.videoRecord.recordState == RecordStateInit) {
@@ -187,21 +202,28 @@
     [self.videoRecord reset];
 }
 
-#pragma mark - FMFModelDelegate
+#pragma mark - video record delegate
 
 - (void)updateFlashState:(FlashState)state
 {
     if (state == FlashOpen) {
         [self.flashBtn setImage:[UIImage imageNamed:@"listing_flash_on"] forState:UIControlStateNormal];
-    }
-    if (state == FlashClose) {
+    }else if (state == FlashClose) {
         [self.flashBtn setImage:[UIImage imageNamed:@"listing_flash_off"] forState:UIControlStateNormal];
-    }
-    if (state == FlashAuto) {
+    }else if (state == FlashAuto) {
         [self.flashBtn setImage:[UIImage imageNamed:@"listing_flash_auto"] forState:UIControlStateNormal];
     }
 }
-
+-(void)updateScreenScale:(VideoViewType)type{
+    if (type == TypeFullScreen) {
+        [self.screenBtn setTitle:@"16:9" forState:UIControlStateNormal];
+    }else if (type == Type4X3){
+        [self.screenBtn setTitle:@"4:3" forState:UIControlStateNormal];
+    }else{
+        [self.screenBtn setTitle:@"1:1" forState:UIControlStateNormal];
+    }
+    
+}
 - (void)updateRecordState:(RecordState)recordState
 {
     if (recordState == RecordStateInit) {

@@ -41,12 +41,11 @@
             _outputSize = CGSizeMake(kScreenWidth+1, kScreenWidth+1);
             break;
          case Type4X3:
-            _outputSize = CGSizeMake(kScreenWidth+1, kScreenWidth*4/3+1);
+            _outputSize = CGSizeMake(kScreenWidth+1, (kScreenWidth + 2)*4/3);
             break;
         case TypeFullScreen:
             _outputSize = CGSizeMake(kScreenWidth+1, kScreenHeight+1);
             break;
-
         default:
             _outputSize = CGSizeMake(kScreenWidth+1, kScreenWidth+1);
             break;
@@ -200,7 +199,7 @@
     self.audioCompressionSettings = @{ AVEncoderBitRatePerChannelKey : @(28000),
                                        AVFormatIDKey : @(kAudioFormatMPEG4AAC),
                                        AVNumberOfChannelsKey : @(1),
-                                       AVSampleRateKey : @(22050) };
+                                       AVSampleRateKey : @(ETRECORD_RATE) };
     
     
     _audioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:self.audioCompressionSettings];
