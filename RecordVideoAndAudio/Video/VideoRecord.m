@@ -209,7 +209,6 @@
         self.focusCursor.transform=CGAffineTransformIdentity;
     } completion:^(BOOL finished) {
         self.focusCursor.alpha=0;
-        
     }];
 }
 //设置聚焦点

@@ -7,7 +7,7 @@
 //
 
 #import "AudioConver.h"
-#import "lame/lame.h"
+#import "lame.h"
 
 @implementation AudioConver
 #pragma mark - ----------------------------------

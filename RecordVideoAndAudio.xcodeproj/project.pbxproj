@@ -41,6 +41,7 @@
 		F7E2D9B3213D050D00912367 /* AudioPlay.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D9AE213D050D00912367 /* AudioPlay.m */; };
 		F7E2D9B9213D055F00912367 /* libmp3lame.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7E2D9B5213D051700912367 /* libmp3lame.a */; };
 		F7E2D9C5213E419E00912367 /* AudioConver.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D9C4213E419E00912367 /* AudioConver.m */; };
+		F7ECE5C0213FC3FD00B624CA /* AudioPlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7ECE5BF213FC3FD00B624CA /* AudioPlayView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,6 +132,8 @@
 		F7E2D9B6213D051700912367 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
 		F7E2D9C3213E419E00912367 /* AudioConver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioConver.h; sourceTree = "<group>"; };
 		F7E2D9C4213E419E00912367 /* AudioConver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioConver.m; sourceTree = "<group>"; };
+		F7ECE5BE213FC3FD00B624CA /* AudioPlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioPlayView.h; sourceTree = "<group>"; };
+		F7ECE5BF213FC3FD00B624CA /* AudioPlayView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioPlayView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,22 +290,14 @@
 		F7E2D9A3213D04F400912367 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				F7ECE5BD213FC20300B624CA /* Record */,
+				F7ECE5BC213FC1F300B624CA /* Play */,
 				F7E2D9B4213D051700912367 /* lame */,
 				F7E2D9AA213D050C00912367 /* Audio.h */,
 				F7E2D9AC213D050C00912367 /* Audio.m */,
-				F7E2D9C3213E419E00912367 /* AudioConver.h */,
-				F7E2D9C4213E419E00912367 /* AudioConver.m */,
 				F7E2D9A8213D050C00912367 /* AudioFile.h */,
 				F7E2D9A4213D050B00912367 /* AudioFile.m */,
-				F7E2D9A9213D050C00912367 /* AudioPlay.h */,
-				F7E2D9AE213D050D00912367 /* AudioPlay.m */,
 				F7E2D9A5213D050B00912367 /* AudioProtocol.h */,
-				F7E2D9AB213D050C00912367 /* AudioRecord.h */,
-				F7E2D9AD213D050D00912367 /* AudioRecord.m */,
-				F76B3E3C213F7323000B87DD /* AudioRecordButton.h */,
-				F76B3E3D213F7323000B87DD /* AudioRecordButton.m */,
-				F7E2D9A6213D050B00912367 /* AudioRecordView.h */,
-				F7E2D9A7213D050B00912367 /* AudioRecordView.m */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -321,6 +316,32 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F7ECE5BC213FC1F300B624CA /* Play */ = {
+			isa = PBXGroup;
+			children = (
+				F7E2D9A9213D050C00912367 /* AudioPlay.h */,
+				F7E2D9AE213D050D00912367 /* AudioPlay.m */,
+				F7ECE5BE213FC3FD00B624CA /* AudioPlayView.h */,
+				F7ECE5BF213FC3FD00B624CA /* AudioPlayView.m */,
+			);
+			path = Play;
+			sourceTree = "<group>";
+		};
+		F7ECE5BD213FC20300B624CA /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				F7E2D9C3213E419E00912367 /* AudioConver.h */,
+				F7E2D9C4213E419E00912367 /* AudioConver.m */,
+				F7E2D9AB213D050C00912367 /* AudioRecord.h */,
+				F7E2D9AD213D050D00912367 /* AudioRecord.m */,
+				F76B3E3C213F7323000B87DD /* AudioRecordButton.h */,
+				F76B3E3D213F7323000B87DD /* AudioRecordButton.m */,
+				F7E2D9A6213D050B00912367 /* AudioRecordView.h */,
+				F7E2D9A7213D050B00912367 /* AudioRecordView.m */,
+			);
+			path = Record;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -463,6 +484,7 @@
 				F7E2D984213CFD7400912367 /* VideoCompress.m in Sources */,
 				F7E2D9A1213D03F000912367 /* MainViewController.m in Sources */,
 				F7E2D938213CFCF000912367 /* ARVideoViewController.m in Sources */,
+				F7ECE5C0213FC3FD00B624CA /* AudioPlayView.m in Sources */,
 				F7E2D9B2213D050D00912367 /* AudioRecord.m in Sources */,
 				F7E2D97F213CFD7400912367 /* VideoFile.m in Sources */,
 				F7E2D98F213CFE4300912367 /* CALayer+XibBorderColor.m in Sources */,

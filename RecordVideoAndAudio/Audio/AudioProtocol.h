@@ -30,4 +30,6 @@
 - (void)audioPlaying:(NSTimeInterval)totalTime time:(NSTimeInterval)currentTime;
 /// 结束播放音频
 - (void)audioPlayFinished;
+///音频播放的状态
+- (void)audioPlayStatus:(AVPlayerTimeControlStatus)status;
 @end

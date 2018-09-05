@@ -19,4 +19,8 @@
 /// 暂停播放
 - (void)playerPause;
 
+///获取播放状态
+- (AVPlayerTimeControlStatus)status;
+
+
 @end

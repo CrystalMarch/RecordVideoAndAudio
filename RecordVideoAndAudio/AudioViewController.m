@@ -8,10 +8,13 @@
 
 #import "AudioViewController.h"
 #import "AudioRecordButton.h"
+#import "AudioPlayView.h"
 @interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioRecordButtonDelegate>
 @property (weak, nonatomic) IBOutlet AudioRecordButton *recordButton;
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
-@property (nonatomic,strong)NSArray *recordFileList;
+@property (nonatomic,strong) NSArray *recordFileList;
+@property (nonatomic,strong) NSMutableArray *playViews;
+@property (nonatomic,strong) AudioPlayView *lastPlayView;
 @end
 
 @implementation AudioViewController
@@ -21,6 +24,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _playViews = [[NSMutableArray alloc] init];
     [self initSubviews];
     [self refreshDataSource];
 }
@@ -37,57 +41,46 @@
     _recordFileList =[fileManager contentsOfDirectoryAtPath:directryPath error:NULL];
     [_mainTableView reloadData];
 }
-- (NSDictionary *)getAudioInfo:(NSString *)fileName{
-    NSString *filePath = [AudioFile AudioDefaultFilePath:fileName];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setValue:filePath forKey:@"FilePath"];
-    [dict setValue:fileName forKey:@"FileName"];
-    long long fileSize = [AudioFile AudioGetFileSizeWithFilePath:filePath];
-    [dict setValue:@(fileSize) forKey:@"FileSize"];
-    int fileTime = [AudioFile getVideoInfoWithSourcePath:filePath];
-    [dict setValue:@(fileTime) forKey:@"FileTime"];
-    return dict;
-}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
     NSString *fileName = self.recordFileList[indexPath.row];
-    NSDictionary *dict = [self getAudioInfo:fileName];
-    NSNumber *fileSize = dict[@"FileSize"];
-    NSString *filePath = dict[@"FilePath"];
-    NSNumber *fileTime = dict[@"FileTime"];
-    if ([fileSize floatValue]/(1024.0*1024) > 1) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fM  %ds)", fileName, [fileSize floatValue]/(1024.0*1024),fileTime.intValue];
-    }else{
-        cell.textLabel.text = [NSString stringWithFormat:@"%@( %.2fkb %ds)", fileName, [fileSize floatValue]/1024,fileTime.intValue];
+    NSString *filePath = [AudioFile AudioDefaultFilePath:fileName];
+  
+    for (UIView *view in cell.contentView.subviews) {
+        [view removeFromSuperview];
     }
-    
-    cell.detailTextLabel.text = filePath;
+    AudioPlayView *voiceButton;
+    if (indexPath.row >= self.playViews.count || self.playViews.count == 0) {
+        voiceButton = [[AudioPlayView alloc] initWithFrame:CGRectMake(10, 10, 160, 30)];
+        voiceButton.filePath = filePath;
+        voiceButton.isShowLeftImg = YES;
+        if (![self.playViews containsObject:voiceButton]) {
+           [self.playViews addObject:voiceButton];
+        }
+    }else{
+        voiceButton = [self.playViews objectAtIndex:indexPath.row];
+    }
+    [cell.contentView addSubview:voiceButton];
     return cell;
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.recordFileList.count;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    NSString *fileName = self.recordFileList[indexPath.row];
-    NSDictionary *dict = [self getAudioInfo:fileName];
-    NSString *filePath = dict[@"FilePath"];
-
-    [[Audio shareAudio].audioPlay playerStart:filePath complete:^(BOOL isFailed) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            [self dismissViewControllerAnimated:YES completion:NULL];
-        }]];
-        [self presentViewController:alert animated:YES completion:NULL];
-    }];
+    AudioPlayView * voiceButton = [self.playViews objectAtIndex:indexPath.row];
+    [voiceButton playVoice];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-#pragma mark - audio delegate
+#pragma mark - audio record delegate
 -(void)endRecord{
     [self refreshDataSource];
 }
+
 
 @end

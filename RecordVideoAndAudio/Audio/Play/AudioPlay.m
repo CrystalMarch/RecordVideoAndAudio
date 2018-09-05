@@ -37,7 +37,7 @@
     
     NSLog(@"%@ 被释放了", self);
 }
-
+#pragma mark - public function
 /// 开始播放
 - (void)playerStart:(NSString *)filePath complete:(void (^)(BOOL isFailed))complete
 {
@@ -66,6 +66,9 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined:)]) {
         [self.delegate audioPlayBegined:AVPlayerItemStatusUnknown];
     }
+    if (complete) {
+        complete(NO);
+    }
 }
 
 /// 暂停播放
@@ -74,6 +77,9 @@
     [self.player pause];
 }
 
+- (AVPlayerTimeControlStatus)status{
+    return _player.timeControlStatus;
+}
 
 #pragma mark - getter
 
@@ -81,6 +87,7 @@
 {
     if (_player == nil) {
         _player = [[AVPlayer alloc] init];
+    
     }
     return _player;
 }
@@ -96,6 +103,8 @@
         // KVO
         // KVO来观察status属性的变化
         [self.player.currentItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+        
+        [self.player addObserver:self forKeyPath:@"timeControlStatus" options:NSKeyValueObservingOptionNew context:nil];
         // KVO监测加载情况
         [self.player.currentItem addObserver:self forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionNew context:nil];
         
@@ -120,6 +129,7 @@
         
         [self.player.currentItem removeObserver:self forKeyPath:@"status"];
         [self.player.currentItem removeObserver:self forKeyPath:@"loadedTimeRanges"];
+        [self.player removeObserver:self forKeyPath:@"timeControlStatus"];
         
         [self.player removeTimeObserver:self.timeObserver];
         self.timeObserver = nil;
@@ -168,6 +178,10 @@
         NSTimeInterval scale = totalBuffer / duration;
         //
         NSLog(@"总时长：%f, 已缓冲：%f, 总进度：%f", duration, totalBuffer, scale);
+    }else if ([keyPath isEqualToString:@"timeControlStatus"]){
+        if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayStatus:)]) {
+            [self.delegate audioPlayStatus:self.player.timeControlStatus];
+        }
     }
 }
 
