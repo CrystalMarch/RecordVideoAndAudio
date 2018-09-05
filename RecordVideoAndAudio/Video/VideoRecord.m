@@ -22,6 +22,7 @@
 @property (nonatomic,strong)AVCaptureAudioDataOutput *audioOutput;
 
 @property (nonatomic,strong)AVAssetWriteManager *writeManager;
+@property (strong,nonatomic)  UIImageView *focusCursor; //聚焦光标
 
 @property (nonatomic,strong,readwrite)NSURL *videoUrl;
 
@@ -72,7 +73,15 @@
         }
     }
 }
-
+- (UIImageView *)focusCursor
+{
+    if (!_focusCursor) {
+        _focusCursor = [[UIImageView alloc]initWithFrame:CGRectMake(100, 100, 50, 50)];
+        _focusCursor.image = [UIImage imageNamed:@"focusImg"];
+        _focusCursor.alpha = 0;
+    }
+    return _focusCursor;
+}
 #pragma mark - setup
 - (void)setUpWithType:(VideoViewType)type{
     ///1. 初始化捕捉会话，数据的采集都在会话中处理
@@ -91,6 +100,9 @@
     
     /// 6. 初始化writer， 用writer 把数据写入文件
     [self setUpWriter];
+    
+    /// 7. 增加聚焦功能（可有可无）
+    [self addFocus];
 }
 - (void)setUpVideo{
     // 2.1 获取视频输入设备(摄像头)
@@ -169,7 +181,65 @@
     self.writeManager = [[AVAssetWriteManager alloc] initWithURL:self.videoUrl viewType:_viewType];
     self.writeManager.delegate = self;
 }
+//添加视频聚焦
+- (void)addFocus
+{
+    [self.superView addSubview:self.focusCursor];
+    UITapGestureRecognizer *tapGesture= [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapScreen:)];
+    [self.superView addGestureRecognizer:tapGesture];
+}
 
+-(void)tapScreen:(UITapGestureRecognizer *)tapGesture{
+    CGPoint point= [tapGesture locationInView:self.superView];
+    //判断点击位置是否在录制区域内
+    if (CGRectContainsPoint(self.previewLayer.frame, point)) {
+        //将UI坐标转化为摄像头坐标
+        CGPoint cameraPoint= [self.previewLayer captureDevicePointOfInterestForPoint:point];
+        [self setFocusCursorWithPoint:point];
+        [self focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
+    }
+}
+
+
+-(void)setFocusCursorWithPoint:(CGPoint)point{
+    self.focusCursor.center=point;
+    self.focusCursor.transform=CGAffineTransformMakeScale(1.5, 1.5);
+    self.focusCursor.alpha=1.0;
+    [UIView animateWithDuration:1.0 animations:^{
+        self.focusCursor.transform=CGAffineTransformIdentity;
+    } completion:^(BOOL finished) {
+        self.focusCursor.alpha=0;
+        
+    }];
+}
+//设置聚焦点
+-(void)focusWithMode:(AVCaptureFocusMode)focusMode exposureMode:(AVCaptureExposureMode)exposureMode atPoint:(CGPoint)point{
+    [self changeDeviceProperty:^(AVCaptureDevice *captureDevice) {
+        if ([captureDevice isFocusModeSupported:focusMode]) {
+            [captureDevice setFocusMode:AVCaptureFocusModeAutoFocus];
+        }
+        if ([captureDevice isFocusPointOfInterestSupported]) {
+            [captureDevice setFocusPointOfInterest:point];
+        }
+        if ([captureDevice isExposureModeSupported:exposureMode]) {
+            [captureDevice setExposureMode:AVCaptureExposureModeAutoExpose];
+        }
+        if ([captureDevice isExposurePointOfInterestSupported]) {
+            [captureDevice setExposurePointOfInterest:point];
+        }
+    }];
+}
+-(void)changeDeviceProperty:(void(^)(AVCaptureDevice *captureDevice))propertyChange{
+    AVCaptureDevice *captureDevice= [self.videoInput device];
+    NSError *error;
+    //注意改变设备属性前一定要首先调用lockForConfiguration:调用完之后使用unlockForConfiguration方法解锁
+    if ([captureDevice lockForConfiguration:&error]) {
+        propertyChange(captureDevice);
+        [captureDevice unlockForConfiguration];
+    }else{
+        NSLog(@"设置设备属性过程发生错误，错误信息：%@",error.localizedDescription);
+    }
+}
 #pragma mark - public method
 //切换摄像头
 - (void)turnCameraAction
