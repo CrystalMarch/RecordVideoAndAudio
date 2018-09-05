@@ -7,9 +7,9 @@
 //
 
 #import "AudioViewController.h"
-#import "AudioRecordView.h"
-@interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioRecordViewDelegate>
-@property (weak, nonatomic) IBOutlet UIButton *recordButton;
+#import "AudioRecordButton.h"
+@interface AudioViewController ()<UITableViewDelegate,UITableViewDataSource,AudioRecordButtonDelegate>
+@property (weak, nonatomic) IBOutlet AudioRecordButton *recordButton;
 @property (weak, nonatomic) IBOutlet UITableView *mainTableView;
 @property (nonatomic,strong)NSArray *recordFileList;
 @end
@@ -21,40 +21,15 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    [self actionForButton];
     [self initSubviews];
     [self refreshDataSource];
 }
 - (void)initSubviews{
-   
+    _recordButton.delegate = self;
     [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     _mainTableView.rowHeight = 50;
 }
-- (void)actionForButton{
-    [_recordButton addTarget:self action:@selector(recordButtonTouchDown) forControlEvents:UIControlEventTouchDown];
-    [_recordButton addTarget:self action:@selector(recordButtonTouchUpInside) forControlEvents:UIControlEventTouchUpInside];
-    [_recordButton addTarget:self action:@selector(recordButtonTouchUpOutside) forControlEvents:UIControlEventTouchUpOutside];
-    [_recordButton addTarget:self action:@selector(recordButtonTouchDragExit) forControlEvents:UIControlEventTouchDragExit];
-    [_recordButton addTarget:self action:@selector(recordButtonTouchDragEnter) forControlEvents:UIControlEventTouchDragEnter];
-    [AudioRecordView share].delegate = self;
-}
-- (void)recordButtonTouchDown{
-    [[AudioRecordView share] startRecord];
-}
-- (void)recordButtonTouchUpInside{
-    [[AudioRecordView share] finishedRecord];
-}
-- (void)recordButtonTouchUpOutside{
-    [[AudioRecordView share] cancelRecord];
-}
 
-- (void)recordButtonTouchDragExit{
-    [[AudioRecordView share] cancelRecordWarning];
-}
-- (void)recordButtonTouchDragEnter{
-    [[AudioRecordView share] resetDisplay];
-}
 
 - (void)refreshDataSource{
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -97,7 +72,6 @@
     NSString *fileName = self.recordFileList[indexPath.row];
     NSDictionary *dict = [self getAudioInfo:fileName];
     NSString *filePath = dict[@"FilePath"];
-    [Audio shareAudio].audioPlay.delegate = self;
     [[Audio shareAudio].audioPlay playerStart:filePath complete:^(BOOL isFailed) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
@@ -111,8 +85,8 @@
     // Dispose of any resources that can be recreated.
 }
 #pragma mark - audio delegate
-
-- (void)audioFinshConvert{
+-(void)endRecord{
     [self refreshDataSource];
 }
+
 @end

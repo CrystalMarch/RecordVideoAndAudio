@@ -32,7 +32,6 @@
     if (self) {
         self.monitorVoice = NO;
     }
-    
     return self;
 }
 
@@ -55,7 +54,7 @@
 {
     NSMutableDictionary *dicM = [NSMutableDictionary dictionary];
     [dicM setObject:@(kAudioFormatLinearPCM) forKey:AVFormatIDKey];
-    [dicM setObject:@(ETRECORD_RATE) forKey:AVSampleRateKey];
+    [dicM setObject:@(AUDIO_ETRECORD_RATE) forKey:AVSampleRateKey];
     [dicM setObject:@(2) forKey:AVNumberOfChannelsKey];
     [dicM setObject:@(16) forKey:AVLinearPCMBitDepthKey];
     [dicM setObject:[NSNumber numberWithInt:AVAudioQualityMin] forKey:AVEncoderAudioQualityKey];
@@ -264,7 +263,7 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(recordBeginConvert)]) {
         [self.delegate recordBeginConvert];
     }
-    [AudioConver conventToMp3WithCafFilePath:cafFilePath mp3FilePath:mp3FilePath sampleRate:ETRECORD_RATE callback:^(BOOL result) {
+    [AudioConver conventToMp3WithCafFilePath:cafFilePath mp3FilePath:mp3FilePath sampleRate:AUDIO_ETRECORD_RATE callback:^(BOOL result) {
         if (result) {
             NSLog(@"-----\n  MP3生成成功: %@   -----  \n", mp3FilePath);
             [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: nil];
@@ -272,9 +271,12 @@
             //转换成功之后删除原来的文件
             [[NSFileManager defaultManager] removeItemAtPath:cafFilePath error:nil];
         }
-        if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
-            [self.delegate recordFinshConvert:result];
-        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshConvert:)]) {
+                [self.delegate recordFinshConvert:result];
+            }
+        });
     }];
 }
 

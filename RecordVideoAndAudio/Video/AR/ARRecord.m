@@ -406,7 +406,7 @@
                                     AVEncoderBitRatePerChannelKey : @(28000),
                                     AVFormatIDKey : @(kAudioFormatLinearPCM),
                                     AVNumberOfChannelsKey : @(1),
-                                    AVSampleRateKey : @(ETRECORD_RATE),
+                                    AVSampleRateKey : @(VIDEO_ETRECORD_RATE),
                                     AVLinearPCMIsFloatKey :@(YES),
                                     AVLinearPCMBitDepthKey:@(16),
                                     AVEncoderAudioQualityKey:@(AVAudioQualityHigh)

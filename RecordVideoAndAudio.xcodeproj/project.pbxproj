@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F76B3E3E213F7323000B87DD /* AudioRecordButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F76B3E3D213F7323000B87DD /* AudioRecordButton.m */; };
 		F7E2D935213CFCF000912367 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D934213CFCF000912367 /* AppDelegate.m */; };
 		F7E2D938213CFCF000912367 /* ARVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D937213CFCF000912367 /* ARVideoViewController.m */; };
 		F7E2D93B213CFCF000912367 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7E2D939213CFCF000912367 /* Main.storyboard */; };
@@ -60,6 +61,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F76B3E3C213F7323000B87DD /* AudioRecordButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioRecordButton.h; sourceTree = "<group>"; };
+		F76B3E3D213F7323000B87DD /* AudioRecordButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioRecordButton.m; sourceTree = "<group>"; };
 		F7E2D930213CFCF000912367 /* RecordVideoAndAudio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordVideoAndAudio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7E2D933213CFCF000912367 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F7E2D934213CFCF000912367 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -296,6 +299,8 @@
 				F7E2D9A5213D050B00912367 /* AudioProtocol.h */,
 				F7E2D9AB213D050C00912367 /* AudioRecord.h */,
 				F7E2D9AD213D050D00912367 /* AudioRecord.m */,
+				F76B3E3C213F7323000B87DD /* AudioRecordButton.h */,
+				F76B3E3D213F7323000B87DD /* AudioRecordButton.m */,
 				F7E2D9A6213D050B00912367 /* AudioRecordView.h */,
 				F7E2D9A7213D050B00912367 /* AudioRecordView.m */,
 			);
@@ -470,6 +475,7 @@
 				F7E2D943213CFCF100912367 /* main.m in Sources */,
 				F7E2D9B3213D050D00912367 /* AudioPlay.m in Sources */,
 				F7E2D980213CFD7400912367 /* VideoRecord.m in Sources */,
+				F76B3E3E213F7323000B87DD /* AudioRecordButton.m in Sources */,
 				F7E2D9C5213E419E00912367 /* AudioConver.m in Sources */,
 				F7E2D990213CFE4300912367 /* UIColor+Hex.m in Sources */,
 				F7E2D987213CFD8200912367 /* ARRecord.m in Sources */,
@@ -660,7 +666,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = test.RecordVideoAndAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -685,7 +691,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = test.RecordVideoAndAudio;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

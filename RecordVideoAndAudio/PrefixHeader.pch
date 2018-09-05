@@ -17,8 +17,9 @@
 #define VIDEO_RECORD_MAX_TIME 15.0           //视频最长录制时间
 #define VIDEO_TIMER_INTERVAL 0.05         //视频计时器刷新频率
 
-#define AUDIO_RECORD_MAX_TIME 10.0  //音频最长录制时间
+#define AUDIO_RECORD_MAX_TIME 15.0  //音频最长录制时间
 #define AUDIO_TIMER_INTERVAL 1.0            //音频计时器刷新频率
+
 /*
  音频
  在数字音频领域，常用的采样率有：
@@ -34,7 +35,8 @@
  96,000 或者 192,000 Hz - DVD-Audio、一些 LPCM DVD 音轨、BD-ROM（蓝光盘）音轨、和 HD-DVD （高清晰度 DVD）音轨所用所用采样率
  2.8224 MHz - SACD、索尼 和 飞利浦 联合开发的称为Direct Stream Digital的1位sigma-delta modulation 过程所用采样率。
  */
-#define ETRECORD_RATE 22050.0
+#define AUDIO_ETRECORD_RATE 8000.0
+#define VIDEO_ETRECORD_RATE  16000.0
 
 
 #define VIDEO_FOLDER @"videoFolder" //视频录制存放文件夹
