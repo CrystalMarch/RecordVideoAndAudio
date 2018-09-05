@@ -8,6 +8,11 @@
 
 #import "AudioRecordButton.h"
 
+@interface AudioRecordButton ()
+//是否可以持续监测触摸事件
+@property (nonatomic,assign) BOOL canTrackingTouch;
+@end
+
 @implementation AudioRecordButton
 
 - (instancetype)init
@@ -32,6 +37,7 @@
 }
 - (void)recordButtonTouchDown{
     [[AudioRecordView share] startRecord];
+    _canTrackingTouch = YES;
 }
 - (void)recordButtonTouchUpInside{
     [[AudioRecordView share] finishedRecord];
@@ -52,5 +58,21 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(endRecord)]) {
         [self.delegate endRecord];
     }
+    _canTrackingTouch = NO;
 }
+#pragma mark - UIControl event
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
+    return YES;
+}
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
+    if (!_canTrackingTouch) {
+        [self endTrackingWithTouch:touch withEvent:event];
+    }
+    return _canTrackingTouch;
+}
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event{
+    self.highlighted = NO;
+    self.selected = NO;
+}
+
 @end

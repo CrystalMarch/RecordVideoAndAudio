@@ -185,8 +185,8 @@
     
     [Video shareVideo].arRecord.delegate = self;
     [Video shareVideo].arRecord.renderer.scene = self.sceneView.scene;
-    [Video shareVideo].arRecord.needToSavedPhotosAlbum = YES;
-    [Video shareVideo].arRecord.needCompress = NO;
+    [Video shareVideo].arRecord.needToSavedPhotosAlbum = YES; //是否保存到本地相册
+    [Video shareVideo].arRecord.needCompress = NO;//是否压缩视频
     
 }
 

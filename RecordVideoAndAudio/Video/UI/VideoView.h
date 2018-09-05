@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "VideoRecord.h"
 @protocol VideoViewDelegate <NSObject>
+///退出录制
 -(void)dismissVC;
+///视频录制完成
 -(void)recordFinishWithvideoUrl:(NSURL *)videoUrl;
 @end
 

@@ -72,6 +72,7 @@
     NSString *fileName = self.recordFileList[indexPath.row];
     NSDictionary *dict = [self getAudioInfo:fileName];
     NSString *filePath = dict[@"FilePath"];
+
     [[Audio shareAudio].audioPlay playerStart:filePath complete:^(BOOL isFailed) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
