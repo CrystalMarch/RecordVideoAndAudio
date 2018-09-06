@@ -29,13 +29,22 @@
   ```
 2. Audio Play (音频播放)
   ```Objective-C
-   [[Audio shareAudio].audioPlay playerStart:filePath complete:^(BOOL isFailed) {
-          UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"音频文件地址无效" preferredStyle:UIAlertControllerStyleAlert];
-          [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-              [self dismissViewControllerAnimated:YES completion:NULL];
-          }]];
-          [self presentViewController:alert animated:YES completion:NULL];
-      }];
+  AudioPlayView *voiceButton;
+  if (indexPath.row >= self.playViews.count || self.playViews.count == 0) {
+  voiceButton = [[AudioPlayView alloc] initWithFrame:CGRectMake(10, 10, 200, 30)];
+  voiceButton.filePath = filePath;
+  voiceButton.isShowLeftImg = YES;
+  if (![self.playViews containsObject:voiceButton]) {
+  [self.playViews addObject:voiceButton];
+  }
+  if (indexPath.row % 2 == 0){
+  voiceButton.isInvert = YES;
+  voiceButton.frame =CGRectMake(kScreenWidth-210, 10, 200, 30);
+  }
+  }else{
+  voiceButton = [self.playViews objectAtIndex:indexPath.row];
+  }
+  [cell.contentView addSubview:voiceButton];
   ```
   Audio Play Delegate:
   ```Objective-C

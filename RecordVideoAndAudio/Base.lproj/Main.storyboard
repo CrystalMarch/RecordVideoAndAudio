@@ -173,7 +173,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Rv-dc-rCu" customClass="AudioRecordButton">
                                 <rect key="frame" x="10" y="607" width="355" height="50"/>
-                                <color key="backgroundColor" red="0.88235294117647056" green="0.93725490196078431" blue="0.52549019607843139" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.88235294119999996" green="0.93725490199999995" blue="0.52549019610000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="dwK-zZ-10I"/>
                                 </constraints>

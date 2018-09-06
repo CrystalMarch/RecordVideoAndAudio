@@ -60,7 +60,6 @@
     AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithURL:url];
     [self.player replaceCurrentItemWithPlayerItem:playerItem];
     [self.player play];
-    
     //
     [self addObserver];
     if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined:)]) {
@@ -80,7 +79,9 @@
 - (AVPlayerTimeControlStatus)status{
     return _player.timeControlStatus;
 }
-
+- (AVPlayerItem *)playerItem{
+    return _player.currentItem;
+}
 #pragma mark - getter
 
 - (AVPlayer *)player
@@ -191,4 +192,5 @@
         [self.delegate audioPlayFinished];
     }
 }
+
 @end

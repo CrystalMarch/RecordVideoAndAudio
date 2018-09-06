@@ -22,5 +22,5 @@
 ///获取播放状态
 - (AVPlayerTimeControlStatus)status;
 
-
+- (AVPlayerItem *)playerItem;
 @end

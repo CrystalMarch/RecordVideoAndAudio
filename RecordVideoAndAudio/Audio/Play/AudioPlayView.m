@@ -15,13 +15,14 @@
 #define voiceSpace 8.0
 #define timeLabelWidth 28.0
 #define delayTime 0.5
-
+#define notificationName @"lastVoiceIsPlaying"
 
 @interface AudioPlayView()<AudioDelegate>
 @property (nonatomic,strong) UILabel *timeLabel;
 @property (nonatomic,strong) UIButton *contentButton;
 @property (nonatomic,strong) AudioPlay *audioPlay;
 @property (nonatomic,strong) UIImageView *hornImgView;
+@property (nonatomic,strong) AVPlayerItem *currentPlayerItem;
 @end
 @implementation AudioPlayView
 
@@ -101,6 +102,8 @@
     [self addSubview:self.timeLabel];
     self.hornImgView.hidden = !self.isShowLeftImg;
     [self addSubview:self.hornImgView];
+    //当上一条语音被当前语音中断时，发送停止动画的通知，结束上一条语音播放的动画
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopAnimation) name:notificationName object:nil];
 }
 - (void)layoutSubviews{
     [super layoutSubviews];
@@ -109,10 +112,12 @@
     self.hornImgView.hidden = !_isShowLeftImg;
     self.hornImgView.frame = CGRectMake(0, (self.frame.size.height-hornImgViewHeight)/2, hornImgWidth, hornImgViewHeight);
     
-    self.timeLabel.frame = CGRectMake(self.frame.size.width-timeLabelWidth, 0, timeLabelWidth, self.frame.size.height);
-    
-    CGFloat voiceButtonWidth = self.frame.size.width - hornImgViewWidth -voiceSpace - timeLabelWidth;
+    CGFloat voiceButtonWidth =    (self.timeLabel.text.integerValue/AUDIO_RECORD_MAX_TIME)*(self.frame.size.width - hornImgViewWidth -voiceSpace - timeLabelWidth) + 35;
     self.contentButton.frame = CGRectMake(hornImgWidth + voiceSpace , 0, voiceButtonWidth, self.frame.size.height);
+    
+    self.timeLabel.frame = CGRectMake(voiceButtonWidth + hornImgWidth + voiceSpace*2 , 0, timeLabelWidth, self.frame.size.height);
+    
+    
     self.contentButton.layer.cornerRadius = self.frame.size.height/2;
     if (self.timeLabel.text.length > 0) {
         self.contentButton.imageEdgeInsets = UIEdgeInsetsMake(0, -voiceButtonWidth + 50, 0, voiceButtonWidth - 50 + 25);
@@ -121,11 +126,12 @@
         self.layer.transform = _isInvert ? CATransform3DMakeRotation(M_PI, 0, 1.0, 0) : CATransform3DIdentity;
         self.contentButton.titleLabel.layer.transform = _isInvert?CATransform3DMakeRotation(M_PI, 0, 1.0, 0) : CATransform3DIdentity;
         self.timeLabel.layer.transform =  _isInvert?CATransform3DMakeRotation(M_PI, 0, 1.0, 0) : CATransform3DIdentity;
-        self.timeLabel.textAlignment = _isInvert?NSTextAlignmentLeft:NSTextAlignmentRight;
+        self.timeLabel.textAlignment = _isInvert?NSTextAlignmentRight:NSTextAlignmentLeft;
     }
 }
 //开始动画
 - (void)startAnimation{
+    NSLog(@"开始动画");
     UIImage *image0 = [UIImage imageNamed:@"fs_icon_wave_0"];
     UIImage *image1 = [UIImage imageNamed:@"fs_icon_wave_1"];
     UIImage *image2 = [UIImage imageNamed:@"fs_icon_wave_2"];
@@ -138,38 +144,31 @@
 }
 //停止动画
 - (void)stopAnimation{
+     NSLog(@"结束动画");
     if (self.contentButton.imageView.isAnimating) {
         [self.contentButton.imageView stopAnimating];
     }
 }
 #pragma mark - target action
 - (void)voiceClicked:(UIButton *)sender{
-    if (self.audioPlay.status == AVPlayerTimeControlStatusPlaying) {
+
+    if (self.audioPlay.status == AVPlayerTimeControlStatusPlaying && self.currentPlayerItem == self.audioPlay.playerItem ) {
         [self.audioPlay playerPause];
-//        [self stopAnimation];
+        [self stopAnimation];
     }else{
+        if (self.audioPlay.status == AVPlayerTimeControlStatusPlaying) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
+        }
         [self.audioPlay playerStart:_filePath complete:^(BOOL isFailed) {
-            if (!isFailed) {
-//                [self startAnimation];
-            }else{
-                NSLog(@"播放失败");
-            }
+            self.currentPlayerItem = self.audioPlay.playerItem;
+            [self startAnimation];
         }];
     }
 }
 #pragma mark - delegate
-- (void)audioPlayFinished{
-//    [self stopAnimation];
-}
 - (void)audioPlayStatus:(AVPlayerTimeControlStatus)status{
-    if (status == AVPlayerTimeControlStatusPlaying) {
-        NSLog(@"开始动画");
-        [self startAnimation];
-    }else if (status == AVPlayerTimeControlStatusPaused){
-        NSLog(@"结束动画");
+    if (status == AVPlayerTimeControlStatusPaused){
          [self stopAnimation];
-    }else if (status == AVPlayerTimeControlStatusWaitingToPlayAtSpecifiedRate){
-        
     }
 }
 @end

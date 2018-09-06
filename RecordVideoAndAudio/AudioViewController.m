@@ -32,6 +32,8 @@
     _recordButton.delegate = self;
     [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     _mainTableView.rowHeight = 50;
+    [_mainTableView setSeparatorColor:[UIColor clearColor]];
+    
 }
 
 
@@ -39,6 +41,9 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *directryPath = [[AudioFile libCachePath] stringByAppendingPathComponent:AUDIO_FOLDER];
     _recordFileList =[fileManager contentsOfDirectoryAtPath:directryPath error:NULL];
+    //数组排序
+    _recordFileList = [_recordFileList sortedArrayUsingSelector:@selector(compare:)];
+    [self.playViews removeAllObjects];
     [_mainTableView reloadData];
 }
 
@@ -52,16 +57,21 @@
     }
     AudioPlayView *voiceButton;
     if (indexPath.row >= self.playViews.count || self.playViews.count == 0) {
-        voiceButton = [[AudioPlayView alloc] initWithFrame:CGRectMake(10, 10, 160, 30)];
+        voiceButton = [[AudioPlayView alloc] initWithFrame:CGRectMake(10, 10, 200, 30)];
         voiceButton.filePath = filePath;
         voiceButton.isShowLeftImg = YES;
         if (![self.playViews containsObject:voiceButton]) {
            [self.playViews addObject:voiceButton];
         }
+        if (indexPath.row % 2 == 0){
+            voiceButton.isInvert = YES;
+            voiceButton.frame =CGRectMake(kScreenWidth-210, 10, 200, 30);
+        }
     }else{
         voiceButton = [self.playViews objectAtIndex:indexPath.row];
     }
     [cell.contentView addSubview:voiceButton];
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     return cell;
 }
 
@@ -70,9 +80,7 @@
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    AudioPlayView * voiceButton = [self.playViews objectAtIndex:indexPath.row];
-    [voiceButton playVoice];
-}
+  }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
