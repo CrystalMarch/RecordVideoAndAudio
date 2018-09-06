@@ -33,10 +33,7 @@
     [_mainTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
     _mainTableView.rowHeight = 50;
     [_mainTableView setSeparatorColor:[UIColor clearColor]];
-    
 }
-
-
 - (void)refreshDataSource{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSString *directryPath = [[AudioFile libCachePath] stringByAppendingPathComponent:AUDIO_FOLDER];

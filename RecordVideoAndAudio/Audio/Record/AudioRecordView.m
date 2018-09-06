@@ -185,6 +185,7 @@
     }
 }
 - (void)recordFinshConvert:(BOOL)result{
+    [self disappear];
     if (self.delegate && [self.delegate respondsToSelector:@selector(audioFinshConvert)]) {
         [self.delegate audioFinshConvert];
     }

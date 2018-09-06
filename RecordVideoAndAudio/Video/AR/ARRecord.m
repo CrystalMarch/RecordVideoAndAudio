@@ -21,6 +21,7 @@
 @property (nonatomic, strong) AVAssetWriter * writer; //负责写的类
 @property (nonatomic, strong) AVAssetWriterInput * videoInput;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor * pixelBufferAdaptor; //输入的缓存
+
 @property (nonatomic, strong) dispatch_queue_t  videoQueue;    //写入的队列
 @property (nonatomic, strong) dispatch_queue_t  audioQueue;    //写入的队列
 
@@ -48,6 +49,7 @@
 {
     self = [super init];
     if (self) {
+        [self setUpInit];
         [self initData];
     }
     return self;
@@ -112,7 +114,7 @@
 - (void)reset{
     if (self.recordState != RecordStateInit) {
         self.recordState = RecordStateInit;
-        [self enterBack];
+        [self destroy];
         [self initData];
     }
 }
@@ -123,7 +125,6 @@
 - (void)startRecording {
     
     [self setUpWriter];
-    [self setUpInit];
     [self initVideoInPut];
     [self initPixelBufferAdaptor];
     
@@ -338,13 +339,18 @@
 #pragma mark - notification
 - (void)enterBack
 {
+    [self destroy];
+}
+- (void)destroy{
     self.recordingSession = nil;
+    self.recordTime = 0;
+    [self.audioRecorder stop];//停止录音
+    VideoDisplayLinkKill(_displayLink); //杀死定时器
+    [self.writer cancelWriting];
     self.writer = nil;
     self.videoInput = nil;
-    self.recordTime = 0;
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
-
 - (void)becomeActive
 {
     [self reset];
@@ -431,7 +437,7 @@
 }
 - (void)dealloc
 {
-    [self enterBack];
-    
+    [self destroy];
+     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

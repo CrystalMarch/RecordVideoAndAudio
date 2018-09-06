@@ -31,8 +31,15 @@
     self = [super init];
     if (self) {
         self.monitorVoice = NO;
+        [self addNotification];
     }
     return self;
+}
+- (void)addNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+- (void)enterBack{
+    [self recorderStop];
 }
 
 // 内存释放
@@ -46,6 +53,7 @@
         self.recorder.delegate = nil;
         self.recorder = nil;
     }
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - getter

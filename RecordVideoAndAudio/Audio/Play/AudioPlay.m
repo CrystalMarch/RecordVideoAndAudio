@@ -18,6 +18,7 @@
 @property (nonatomic, strong) id timeObserver;
 
 @property (nonatomic, assign) BOOL hasObserver;
+@property (nonatomic, assign) BOOL enterBack; //是否退到后台
 
 @end
 
@@ -26,15 +27,62 @@
 {
     self = [super init];
     if (self) {
-        
+        [self addNotification];
     }
     return self;
 }
+- (void)addNotification{
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlayEnterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRouteChange:) name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
+}
 
+- (void)handleInterruption:(NSNotification *)notification
+{
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger interuptionType = [[interuptionDict     valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+    NSNumber* seccondReason = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey] ;
+    switch (interuptionType) {
+        case AVAudioSessionInterruptionTypeBegan:
+        {
+            NSLog(@"收到中断，停止音频播放");
+            break;
+        }
+        case AVAudioSessionInterruptionTypeEnded:
+            NSLog(@"系统中断结束");
+            break;
+    }
+    switch ([seccondReason integerValue]) {
+        case AVAudioSessionInterruptionOptionShouldResume:
+            NSLog(@"恢复音频播放");
+            break;
+        default:
+            break;
+    }
+  
+}
+- (void)handleRouteChange:(NSNotification *)notification
+{
+    NSDictionary *info = notification.userInfo;
+    AVAudioSessionRouteChangeReason reason = [info[AVAudioSessionRouteChangeReasonKey] unsignedIntegerValue];
+    if (reason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable) {  //旧音频设备断开
+        //获取上一线路描述信息
+        AVAudioSessionRouteDescription *previousRoute = info[AVAudioSessionRouteChangePreviousRouteKey];
+        //获取上一线路的输出设备类型
+        AVAudioSessionPortDescription *previousOutput = previousRoute.outputs[0];
+        NSString *portType = previousOutput.portType;
+        if ([portType isEqualToString:AVAudioSessionPortHeadphones]) {
+        }
+    }
+
+}
+- (void)audioPlayEnterBack{
+    self.enterBack = YES;
+}
 - (void)dealloc
 {
     [self removeObserver];
-    
+     [[NSNotificationCenter defaultCenter] removeObserver:self];
     NSLog(@"%@ 被释放了", self);
 }
 #pragma mark - public function
@@ -48,7 +96,6 @@
         return;
     }
     
-    //
     [self removeObserver];
     
     // 设置播放的url
@@ -60,7 +107,7 @@
     AVPlayerItem *playerItem = [[AVPlayerItem alloc] initWithURL:url];
     [self.player replaceCurrentItemWithPlayerItem:playerItem];
     [self.player play];
-    //
+    _enterBack = NO;
     [self addObserver];
     if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined:)]) {
         [self.delegate audioPlayBegined:AVPlayerItemStatusUnknown];
@@ -153,10 +200,15 @@
                 }
             } break;
             case AVPlayerItemStatusReadyToPlay: {
-                NSLog(@"准好播放了");
-                [self.player play];
-                if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined:)]) {
-                    [self.delegate audioPlayBegined:AVPlayerItemStatusReadyToPlay];
+                //判断是否是因为退到后台再进入
+                if (_enterBack) {
+                    [self playerPause];
+                }else{
+                    NSLog(@"准备播放");
+                    [self.player play];
+                    if (self.delegate && [self.delegate respondsToSelector:@selector(audioPlayBegined:)]) {
+                        [self.delegate audioPlayBegined:AVPlayerItemStatusReadyToPlay];
+                    }
                 }
             } break;
             case AVPlayerItemStatusUnknown: {
