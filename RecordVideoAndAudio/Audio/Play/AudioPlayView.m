@@ -40,13 +40,13 @@
         _contentButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_contentButton setBackgroundColor:[UIColor colorWithRGB:0xE1EF86 alpha:1]];
         _contentButton.titleLabel.font = [UIFont systemFontOfSize:14];
-        _contentButton.adjustsImageWhenHighlighted = YES;
+        _contentButton.adjustsImageWhenHighlighted = NO; //设置按钮点击时没有高亮状态
         _contentButton.imageView.animationDuration = 2.0;
         _contentButton.imageView.animationRepeatCount = 30;
         _contentButton.imageView.clipsToBounds = NO;
         _contentButton.imageView.contentMode = UIViewContentModeCenter;
         _contentButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
-        _contentButton.layer.borderColor = [UIColor colorWithRGB:0x242424 alpha:1].CGColor;
+        _contentButton.layer.borderColor = [UIColor colorWithRGB:0x659738 alpha:1].CGColor;
         _contentButton.layer.borderWidth = 0.5;
         _contentButton.layer.masksToBounds = YES;
         [_contentButton setImage:[UIImage imageNamed:@"fs_icon_wave_2"] forState:UIControlStateNormal];
