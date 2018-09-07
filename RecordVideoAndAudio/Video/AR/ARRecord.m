@@ -364,7 +364,7 @@
             break;
     }
 }
-#pragma mark ======================================= 和时间有关的方法 =======================================
+#pragma mark - 和时间有关的方法 -
 
 - (CMTime)getCurrentCMTime {
     return CMTimeMakeWithSeconds(CACurrentMediaTime(), 1000);
@@ -375,7 +375,7 @@
     return self.currentTime;
 }
 
-#pragma mark ======================================= 代理方法 =======================================
+#pragma mark - 代理方法 -
 
 - (void)audioRecorderEncodeErrorDidOccur:(AVAudioRecorder *)recorder error:(NSError *)error {
     NSLog(@"音频错误");
@@ -383,7 +383,7 @@
     
 }
 
-#pragma mark ============================ 初始化方法 ============================
+#pragma mark - 初始化方法 -
 
 - (void)initVideoInPut {
     
