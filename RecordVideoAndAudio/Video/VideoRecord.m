@@ -342,6 +342,7 @@
 - (void)setUpInit{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(becomeActive) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
     _recordState = RecordStateInit;
 }
 
@@ -465,6 +466,21 @@
 - (void)becomeActive
 {
     [self reset];
+}
+- (void)handleInterruption:(NSNotification *)notification
+{
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger interuptionType = [[interuptionDict     valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+    switch (interuptionType) {
+        case AVAudioSessionInterruptionTypeBegan:
+        {
+            [self enterBack];
+            break;
+        }
+        case AVAudioSessionInterruptionTypeEnded:
+            [self becomeActive];
+            break;
+    }
 }
 - (void)destroy
 {

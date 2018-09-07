@@ -32,7 +32,7 @@
     return self;
 }
 - (void)addNotification{
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlayEnterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioPlayEnterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleRouteChange:) name:AVAudioSessionRouteChangeNotification object:[AVAudioSession sharedInstance]];
 }
@@ -41,25 +41,17 @@
 {
     NSDictionary *interuptionDict = notification.userInfo;
     NSInteger interuptionType = [[interuptionDict     valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
-    NSNumber* seccondReason = [[notification userInfo] objectForKey:AVAudioSessionInterruptionOptionKey] ;
     switch (interuptionType) {
         case AVAudioSessionInterruptionTypeBegan:
         {
-            NSLog(@"收到中断，停止音频播放");
+            //中断开始
+            [self playerPause];
             break;
         }
         case AVAudioSessionInterruptionTypeEnded:
-            NSLog(@"系统中断结束");
+            //系统中断结束
             break;
     }
-    switch ([seccondReason integerValue]) {
-        case AVAudioSessionInterruptionOptionShouldResume:
-            NSLog(@"恢复音频播放");
-            break;
-        default:
-            break;
-    }
-  
 }
 - (void)handleRouteChange:(NSNotification *)notification
 {
@@ -74,7 +66,6 @@
         if ([portType isEqualToString:AVAudioSessionPortHeadphones]) {
         }
     }
-
 }
 - (void)audioPlayEnterBack{
     self.enterBack = YES;

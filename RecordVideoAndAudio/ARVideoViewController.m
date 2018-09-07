@@ -42,6 +42,7 @@
     ARWorldTrackingConfiguration * configuration = [[ARWorldTrackingConfiguration alloc]init];
     [self.sceneView.session runWithConfiguration:configuration];
     [self initSceneView];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

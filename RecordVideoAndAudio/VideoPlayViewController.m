@@ -20,6 +20,7 @@
 @end
 
 @implementation VideoPlayViewController
+#pragma mark - 生命周期
 - (BOOL)prefersStatusBarHidden{
     return YES;
 }
@@ -38,6 +39,7 @@
     [self.myPlayer performSelector:@selector(play) withObject:self.myPlayer afterDelay:0.5];
     //通过KVO来观察status属性的变化，来获取播放之前的错误信息
     [self.item addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [self addNotification];
     [self addVideoTimerObserver];
     [self setNavUI];
     [self.slider addTarget:self action:@selector(sliderAction) forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchUpOutside];
@@ -66,6 +68,40 @@
     //移除监听（观察者）
     [object removeObserver:self forKeyPath:@"status"];
 }
+#pragma mark - notification
+- (void)addNotification{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerMovieFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.myPlayer.currentItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(becomeActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+}
+- (void)enterBack{
+    [self.myPlayer pause];
+}
+- (void)becomeActive{
+    [self.myPlayer play];
+}
+- (void)handleInterruption:(NSNotification *)notification
+{
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger interuptionType = [[interuptionDict     valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+    switch (interuptionType) {
+        case AVAudioSessionInterruptionTypeBegan:
+        {
+            [self.myPlayer pause];
+            break;
+        }
+        case AVAudioSessionInterruptionTypeEnded:
+            [self.myPlayer play];
+            break;
+    }
+
+}
+- (void)playerMovieFinish:(NSNotification *)notifacation{
+    [self.myPlayer seekToTime:kCMTimeZero];
+    [self.myPlayer play];
+}
+#pragma mark - observer
 - (void)addVideoTimerObserver{
     __weak typeof (self)weakSelf = self;
     _timeObser = [_myPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
@@ -78,7 +114,7 @@
     NSLog(@"%@",NSStringFromSelector(_cmd));
     [_myPlayer removeTimeObserver:_timeObser];
 }
-
+#pragma mark - UI
 - (UISlider *)slider{
     if (!_slider) {
         _slider = [[UISlider alloc] initWithFrame:CGRectMake(0, kScreenHeight - 30, kScreenWidth, 30)];
@@ -107,6 +143,7 @@
     self.navigationController.navigationBar.hidden = YES;
     [self.view addSubview:imageView];
 }
+#pragma mark - action
 - (void)dismissAction{
     [self.myPlayer pause];
     self.myPlayer = nil;
@@ -139,6 +176,7 @@
 - (void)dealloc
 {
     [self removeVideoTimerObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

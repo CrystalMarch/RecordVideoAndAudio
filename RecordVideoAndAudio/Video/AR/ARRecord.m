@@ -40,7 +40,6 @@
 @property (nonatomic, strong) AVAudioSession * recordingSession;
 @property (nonatomic, strong) AVAudioRecorder * audioRecorder;
 
-
 @end
 
 @implementation ARRecord
@@ -71,6 +70,7 @@
 - (void)setUpInit{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enterBack) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(becomeActive) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleInterruption:) name:AVAudioSessionInterruptionNotification object:[AVAudioSession sharedInstance]];
     _recordState = RecordStateInit;
 }
 - (void)initData {
@@ -84,7 +84,7 @@
     
     // 是否是第一次写入
     self.isFirstWriter = YES;
-    
+
     // 创建SCNRenderer
     self.renderer = [SCNRenderer rendererWithDevice:nil options:nil];
     
@@ -128,12 +128,11 @@
     [self initVideoInPut];
     [self initPixelBufferAdaptor];
     
-    // 开始写入
-    [self.writer startWriting];
-    
     self.initialTime = kCMTimeInvalid;
     self.initialTime = [self getCurrentCMTime];
-    
+    // 开始写入
+    [self.writer startWriting];
+
     //设置写入时间
     [self.writer startSessionAtSourceTime:kCMTimeZero];
     
@@ -207,7 +206,7 @@
     
     //从着色器里获取到图片
     CFTimeInterval time = CACurrentMediaTime();
-    
+    NSLog(@"render is :%@, size is : (%.2f,%.2f)",self.renderer,self.outputSize.width,self.outputSize.height);
     UIImage *image = [self.renderer snapshotAtTime:time withSize:CGSizeMake(self.outputSize.width, self.outputSize.height) antialiasingMode:SCNAntialiasingModeMultisampling4X];
     
     CVPixelBufferRef pixelBuffer = NULL;
@@ -249,23 +248,22 @@
 
 //结束录制
 - (void)endRecording {
-    
     [self.audioRecorder stop];
-    
     VideoDisplayLinkStop(self.displayLink);
-    
     self.isFirstWriter = YES;
-    
     [self.videoInput markAsFinished];
-    
     __weak __typeof(self)weakSelf = self;
     if (weakSelf.writer && weakSelf.writer.status == AVAssetWriterStatusWriting) {
         
         [weakSelf.writer finishWritingWithCompletionHandler:^{
-            //合并
-            [self merge];
+            //退到后台以后将不再进行视频合成
+            if (self.videoPath) {
+                //合并
+                [self merge];
+            }
         }];
     }
+    
 }
 - (void)merge {
     
@@ -339,21 +337,32 @@
 #pragma mark - notification
 - (void)enterBack
 {
-    [self destroy];
-}
-- (void)destroy{
-    self.recordingSession = nil;
-    self.recordTime = 0;
-    [self.audioRecorder stop];//停止录音
-    VideoDisplayLinkKill(_displayLink); //杀死定时器
-    [self.writer cancelWriting];
-    self.writer = nil;
-    self.videoInput = nil;
-    
+    self.videoPath =  nil;
+    self.audioPath = nil;
+    [self stopRecord];
 }
 - (void)becomeActive
 {
-    [self reset];
+    // 是否是第一次写入
+    self.isFirstWriter = YES;
+    // 清理旧文件
+    [self clearPath];
+    self.recordState = RecordStateInit;
+}
+- (void)handleInterruption:(NSNotification *)notification
+{
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger interuptionType = [[interuptionDict     valueForKey:AVAudioSessionInterruptionTypeKey] integerValue];
+    switch (interuptionType) {
+        case AVAudioSessionInterruptionTypeBegan:
+        {
+            [self enterBack];
+            break;
+        }
+        case AVAudioSessionInterruptionTypeEnded:
+            [self becomeActive];
+            break;
+    }
 }
 #pragma mark ======================================= 和时间有关的方法 =======================================
 
@@ -435,9 +444,19 @@
     }
     return _audioRecorder;
 }
+- (void)destroy{
+    self.recordingSession = nil;
+    self.recordTime = 0;
+    [self.audioRecorder stop];//停止录音
+    VideoDisplayLinkKill(_displayLink); //杀死定时器
+    [self.writer cancelWriting];
+    self.writer = nil;
+    self.videoInput = nil;
+    
+}
 - (void)dealloc
 {
     [self destroy];
-     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end
