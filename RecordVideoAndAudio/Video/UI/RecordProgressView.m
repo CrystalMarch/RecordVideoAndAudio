@@ -37,12 +37,13 @@
 }
 - (void)drawCycleProgress
 {
+    
     CGPoint center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
     CGFloat radius = self.frame.size.width/2;
     CGFloat startA = - M_PI_2;
     CGFloat endA = -M_PI_2 + M_PI * 2 * _progress;
     
-    if (!_backLayer && self.frame.size.width > 0 && self.frame.size.height > 0) {
+    if ((!_backLayer && self.frame.size.width > 0 && self.frame.size.height > 0) || (_progress == 0) ){
         _backLayer = [CAShapeLayer layer];
         _backLayer.frame = self.bounds;
         _backLayer.fillColor = [[UIColor clearColor] CGColor];

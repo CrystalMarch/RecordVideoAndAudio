@@ -33,6 +33,9 @@
     _videoView.delegate = self;
     [self.view addSubview:_videoView];
     self.view.backgroundColor = [UIColor blackColor];
+    [_videoView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
 }
 - (BOOL)prefersStatusBarHidden{
     return YES;

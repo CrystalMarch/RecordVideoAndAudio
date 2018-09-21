@@ -29,6 +29,8 @@
 @property (nonatomic,assign)FlashState flashState;
 @property (nonatomic,assign)VideoViewType viewType;
 
+@property (nonatomic,assign)UIDeviceOrientation shootingOrientation;
+
 @end
 
 @implementation VideoRecord
@@ -42,6 +44,7 @@
     }
     return  self;
 }
+
 #pragma mark - lazy load
 - (AVCaptureSession *)session{
     if (!_session) {
@@ -61,7 +64,7 @@
 - (AVCaptureVideoPreviewLayer *)previewLayer{
     if (!_previewLayer) {
         _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-        _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+        _previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
     }
     return _previewLayer;
 }
@@ -98,10 +101,7 @@
     ///5. 开始采集画面
     [self.session startRunning];
     
-    /// 6. 初始化writer， 用writer 把数据写入文件
-    [self setUpWriter];
-    
-    /// 7. 增加聚焦功能（可有可无）
+    /// 6. 增加聚焦功能（可有可无）
     [self addFocus];
 }
 - (void)setUpVideo{
@@ -114,14 +114,21 @@
     if ([self.session canAddInput:self.videoInput]) {
         [self.session addInput:self.videoInput];
     }
-    
+    // 3.1初始化设备输出对象，用于获得输出数据
     self.videoOutput = [[AVCaptureVideoDataOutput alloc] init];
     self.videoOutput.alwaysDiscardsLateVideoFrames = YES; //立即丢弃旧帧，节省内存，默认YES
-    
-    [self.videoOutput setSampleBufferDelegate:self queue:self.videoQueue];
-    if ([self.session canAddOutput:self.videoOutput]) {
-        [self.session addOutput:self.videoOutput];
+    // 3.2设置输出对象的一些属性
+    AVCaptureConnection *captureConnection=[self.videoOutput connectionWithMediaType:AVMediaTypeVideo];
+    //设置防抖
+    if ([captureConnection isVideoStabilizationSupported ]) {
+        captureConnection.preferredVideoStabilizationMode=AVCaptureVideoStabilizationModeAuto;
     }
+    [self.videoOutput setSampleBufferDelegate:self queue:self.videoQueue];
+    // 3.3将设备输出添加到会话中
+    if ([_session canAddOutput:self.videoOutput]) {
+        [_session addOutput:self.videoOutput];
+    }
+    
 }
 - (void)setUpAudio{
     // 2.2 获取音频输入设备
@@ -176,6 +183,7 @@
     }
     [_superView.layer insertSublayer:self.previewLayer atIndex:0];
 }
+/// 初始化writer， 用writer 把数据写入文件
 - (void)setUpWriter{
     self.videoUrl = [[NSURL alloc] initFileURLWithPath:[VideoFile VideoFilePath:nil]];
     self.writeManager = [[AVAssetWriteManager alloc] initWithURL:self.videoUrl viewType:_viewType];
@@ -307,7 +315,6 @@
         _viewType = TypeFullScreen;
     }
     [self setUpPreviewLayerWithType:_viewType];
-    [self setUpWriter];
     if (self.delegate && [self.delegate respondsToSelector:@selector(updateScreenScale:)]) {
         [self.delegate updateScreenScale:_viewType];
     }
@@ -315,6 +322,8 @@
 - (void)startRecord
 {
     if (self.recordState == RecordStateInit) {
+        [self setUpWriter];
+        self.shootingOrientation = [UIDevice currentDevice].orientation;
         [self.writeManager startWrite];
         self.recordState = RecordStateRecording;
     }
@@ -332,7 +341,6 @@
 {
     self.recordState = RecordStateInit;
     [self.session startRunning];
-    [self setUpWriter];
     
 }
 
@@ -375,7 +383,6 @@
         
         //视频
         if (connection == [self.videoOutput connectionWithMediaType:AVMediaTypeVideo]) {
-            
             if (!self.writeManager.outputVideoFormatDescription) {
                 @synchronized(self) {
                     CMFormatDescriptionRef formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer);

@@ -19,6 +19,21 @@
     // Override point for customization after application launch.
     return YES;
 }
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(nullable UIWindow *)window
+
+{
+    
+    if (self.allowRotation == YES) {
+        //横屏
+        return UIInterfaceOrientationMaskAllButUpsideDown;
+        
+    }else{
+        //竖屏
+        return UIInterfaceOrientationMaskPortrait;
+        
+    }
+    
+}
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {

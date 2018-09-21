@@ -13,6 +13,8 @@
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #import "Timer.h"
 #import "UIColor+Hex.h"
+#import <Masonry/Masonry.h>
+
 //video
 #define VIDEO_RECORD_MAX_TIME 15.0           //视频最长录制时间
 #define VIDEO_TIMER_INTERVAL 0.05         //视频计时器刷新频率

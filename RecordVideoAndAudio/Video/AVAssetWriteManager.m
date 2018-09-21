@@ -192,7 +192,26 @@
     _videoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:self.videoCompressionSettings];
     //expectsMediaDataInRealTime 必须设为yes，需要从capture session 实时获取数据
     _videoInput.expectsMediaDataInRealTime = YES;
-    _videoInput.transform = CGAffineTransformMakeRotation(M_PI / 2.0);
+    
+    
+   UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+
+    if (orientation == UIDeviceOrientationLandscapeRight)
+    {
+        _videoInput.transform = CGAffineTransformMakeRotation(M_PI);
+    }
+    else if (orientation == UIDeviceOrientationLandscapeLeft)
+    {
+        _videoInput.transform = CGAffineTransformMakeRotation(0);
+    }
+    else if (orientation == UIDeviceOrientationPortraitUpsideDown)
+    {
+        _videoInput.transform = CGAffineTransformMakeRotation(M_PI + (M_PI / 2.0));
+    }
+    else
+    {
+        _videoInput.transform = CGAffineTransformMakeRotation(M_PI / 2.0);
+    }
     
     
     // 音频设置
