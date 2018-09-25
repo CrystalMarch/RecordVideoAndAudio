@@ -31,6 +31,8 @@
     // Do any additional setup after loading the view.
     _videoView  =[[VideoView alloc] initWithFMVideoViewType:TypeFullScreen];
     _videoView.delegate = self;
+    _videoView.needCompress = YES;
+    _videoView.needToSavedPhotosAlbum = YES;
     [self.view addSubview:_videoView];
     self.view.backgroundColor = [UIColor blackColor];
     [_videoView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -46,9 +48,7 @@
 }
 - (void)recordFinishWithvideoUrl:(NSURL *)videoUrl
 {
-    VideoPlayViewController *playVC = [[VideoPlayViewController alloc] init];
-    playVC.videoUrl =  videoUrl;
-    [self presentViewController:playVC animated:YES completion:nil];
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -11,7 +11,6 @@
 		246804C965BD1B9667ACCAFB /* libPods-RecordVideoAndAudioTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B100703D888A8D75CED8607F /* libPods-RecordVideoAndAudioTests.a */; };
 		79756444710CAA17E22BC34C /* libPods-RecordVideoAndAudioUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4035FB4BF75FD15B550A08A5 /* libPods-RecordVideoAndAudioUITests.a */; };
 		F767CED12154B9540078ABB7 /* UIDevice+InterfaceOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = F767CECF2154B9540078ABB7 /* UIDevice+InterfaceOrientation.m */; };
-		F767CED42154D4F80078ABB7 /* VideoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = F767CED32154D4F80078ABB7 /* VideoRotate.m */; };
 		F767CED7215501AE0078ABB7 /* VideoPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = F767CED6215501AE0078ABB7 /* VideoPreview.m */; };
 		F76B3E3E213F7323000B87DD /* AudioRecordButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F76B3E3D213F7323000B87DD /* AudioRecordButton.m */; };
 		F7E2D935213CFCF000912367 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7E2D934213CFCF000912367 /* AppDelegate.m */; };
@@ -79,8 +78,6 @@
 		DEAB58AB7945B00C1E81597E /* Pods-RecordVideoAndAudioUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RecordVideoAndAudioUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RecordVideoAndAudioUITests/Pods-RecordVideoAndAudioUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F767CECF2154B9540078ABB7 /* UIDevice+InterfaceOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+InterfaceOrientation.m"; sourceTree = "<group>"; };
 		F767CED02154B9540078ABB7 /* UIDevice+InterfaceOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+InterfaceOrientation.h"; sourceTree = "<group>"; };
-		F767CED22154D4F80078ABB7 /* VideoRotate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoRotate.h; sourceTree = "<group>"; };
-		F767CED32154D4F80078ABB7 /* VideoRotate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoRotate.m; sourceTree = "<group>"; };
 		F767CED5215501AE0078ABB7 /* VideoPreview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPreview.h; sourceTree = "<group>"; };
 		F767CED6215501AE0078ABB7 /* VideoPreview.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VideoPreview.m; sourceTree = "<group>"; };
 		F76B3E3C213F7323000B87DD /* AudioRecordButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioRecordButton.h; sourceTree = "<group>"; };
@@ -281,8 +278,6 @@
 				F7E2D975213CFD7300912367 /* Video.m */,
 				F7E2D972213CFD7300912367 /* VideoCompress.h */,
 				F7E2D97D213CFD7400912367 /* VideoCompress.m */,
-				F767CED22154D4F80078ABB7 /* VideoRotate.h */,
-				F767CED32154D4F80078ABB7 /* VideoRotate.m */,
 				F7E2D977213CFD7300912367 /* VideoDisplayLink.h */,
 				F7E2D96F213CFD7200912367 /* VideoDisplayLink.m */,
 				F7E2D97C213CFD7400912367 /* VideoFile.h */,
@@ -593,7 +588,6 @@
 				F7E2D9A1213D03F000912367 /* MainViewController.m in Sources */,
 				F7E2D938213CFCF000912367 /* ARVideoViewController.m in Sources */,
 				F767CED7215501AE0078ABB7 /* VideoPreview.m in Sources */,
-				F767CED42154D4F80078ABB7 /* VideoRotate.m in Sources */,
 				F7ECE5C0213FC3FD00B624CA /* AudioPlayView.m in Sources */,
 				F7E2D9B2213D050D00912367 /* AudioRecord.m in Sources */,
 				F7E2D97F213CFD7400912367 /* VideoFile.m in Sources */,

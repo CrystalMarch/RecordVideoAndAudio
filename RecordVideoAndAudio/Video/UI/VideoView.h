@@ -19,7 +19,8 @@
 @property (nonatomic, assign) VideoViewType viewType;
 @property (nonatomic, strong, readonly) VideoRecord *videoRecord;
 @property (nonatomic, weak) id <VideoViewDelegate> delegate;
-
+@property(nonatomic,assign)BOOL needCompress;
+@property(nonatomic,assign)BOOL needToSavedPhotosAlbum;
 - (instancetype)initWithFMVideoViewType:(VideoViewType)type;
 - (void)reset;
 

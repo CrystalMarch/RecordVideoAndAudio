@@ -64,7 +64,8 @@
 - (AVCaptureVideoPreviewLayer *)previewLayer{
     if (!_previewLayer) {
         _previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-        _previewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+       // 取景框不能被压缩,高度变矮,宽度不变,图片变形
+        _previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
     }
     return _previewLayer;
 }
@@ -199,8 +200,11 @@
 
 -(void)tapScreen:(UITapGestureRecognizer *)tapGesture{
     CGPoint point= [tapGesture locationInView:self.superView];
-    //判断点击位置是否在录制区域内
-    if (CGRectContainsPoint(self.previewLayer.frame, point)) {
+    //判断点击位置是否在录制区域内剔除顶部和底部的控件区域
+    CGRect  topRect = CGRectIntersection(self.previewLayer.frame, _topBarRect);
+    CGRect  bottomRect = CGRectIntersection(self.previewLayer.frame, _bottomBarRect);
+
+    if (CGRectContainsPoint(CGRectMake(0, self.previewLayer.frame.origin.y + topRect.size.height, kScreenWidth, self.previewLayer.frame.size.height - topRect.size.height-bottomRect.size.height), point)) {
         //将UI坐标转化为摄像头坐标
         CGPoint cameraPoint= [self.previewLayer captureDevicePointOfInterestForPoint:point];
         [self setFocusCursorWithPoint:point];
@@ -432,36 +436,19 @@
     [self saveVideo];
 }
 - (void)saveVideo{
-    
-    if (_needCompress) {
-        //压缩并保存压缩后的视频到手机相册
-        VideoCompress *compress = [[VideoCompress alloc] init];
-        [compress VideoCompress:[AVAsset assetWithURL:self.videoUrl] needToSavedPhotosAlbum:_needToSavedPhotosAlbum presetName:nil];
-        compress.compressionCompletedBlock = ^(NSURL * url){
-            [self finishCompress:url];
-            [[NSFileManager defaultManager] removeItemAtPath:self.videoUrl.path error:nil];
-        };
-        compress.compressionFailedBlock = ^{
-            NSLog(@"视频压缩失败");
-            [self saveUnCompressVideo];
-        };
-    }else{
-        [self saveUnCompressVideo];
+    self.recordState = RecordStateFinish;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinshed:)]) {
+        [self.delegate recordFinshed:self.videoUrl];
     }
+    [self saveUnCompressVideo];
 }
 - (void)saveUnCompressVideo{
-    [self finishCompress:self.videoUrl];
     if (_needToSavedPhotosAlbum) {
         //保存未压缩的视频到手机相册
         UISaveVideoAtPathToSavedPhotosAlbum(self.videoUrl.path, nil, nil, nil);
     }
 }
--(void)finishCompress:(NSURL *)videoUrl{
-    self.recordState = RecordStatecompressed;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(endMerge:)]) {
-        [self.delegate endMerge:videoUrl];
-    }
-}
+
 #pragma mark - notification
 - (void)enterBack
 {

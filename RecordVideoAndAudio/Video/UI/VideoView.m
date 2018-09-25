@@ -8,7 +8,9 @@
 
 #import "VideoView.h"
 #import "RecordProgressView.h"
-@interface VideoView ()<VideoDelegate>
+#import "VideoPreview.h"
+#import "VideoCompress.h"
+@interface VideoView ()<VideoDelegate,VideoPreviewDelegate>
 
 @property (nonatomic, strong) UIView *topView;
 @property (nonatomic, strong) UIView *bottomView;
@@ -22,7 +24,8 @@
 @property (nonatomic, strong) RecordProgressView *progressView;
 @property (nonatomic, strong) UIButton *recordBtn;
 @property (nonatomic, assign) CGFloat recordTime;
-
+@property (nonatomic, strong) VideoPreview *videoPreview;
+@property (nonatomic, strong) NSURL *videoUrl;
 @property (nonatomic, strong, readwrite) VideoRecord *videoRecord;
 
 @end
@@ -87,8 +90,7 @@
 {
     self.videoRecord = [[VideoRecord alloc] initWithVideoViewType:type superView:self];
     self.videoRecord.delegate = self;
-    self.videoRecord.needCompress = YES;
-    self.videoRecord.needToSavedPhotosAlbum = YES;
+    self.videoRecord.needToSavedPhotosAlbum = NO;
     
     self.topView = [[UIView alloc] init];
     self.topView.backgroundColor = [UIColor colorWithRGB:0x000000 alpha:0.5];
@@ -214,7 +216,20 @@
     }];
     [self.progressView resetProgress];
     
+    self.videoRecord.topBarRect = CGRectMake(0, 0, kScreenWidth, 44); //顶部控件区域
+    self.videoRecord.bottomBarRect = CGRectMake(0, kScreenHeight-126, kScreenWidth, 126);//底部控件区域
 }
+
+- (void)initVideoPreview{
+    _videoPreview = [[VideoPreview alloc] init];
+    _videoPreview.delegate = self;
+    [self addSubview:_videoPreview];
+    [_videoPreview mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.height.width.equalTo(self);
+    }];
+}
+
+
 - (void)setLayoutWhenScreenLandscapeLeft{
     NSMutableArray *views = [[NSMutableArray alloc] initWithArray:self.topView.subviews];
     for (UIView *view in views) {
@@ -343,8 +358,6 @@
     }
     
 }
-
-
 - (void)stopRecord
 {
     [self.videoRecord stopRecord];
@@ -391,11 +404,12 @@
         NSLog(@"video compressed ");
     }
 }
-- (void)endMerge:(NSURL *)url{
-    if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinishWithvideoUrl:)]) {
-        [self.delegate recordFinishWithvideoUrl:url];
-    }
+- (void)recordFinshed:(NSURL *)url{
+    [self initVideoPreview];
+    _videoUrl = url;
+    _videoPreview.videoURL = url;
 }
+
 - (void)updateRecordingProgress:(CGFloat)progress
 {
     [self.progressView updateProgressWithValue:progress];
@@ -408,5 +422,33 @@
     return [NSString stringWithFormat:@"%02li:%02li",lround(floor(videocurrent/60.f)),lround(floor(videocurrent/1.f))%60];
     
 }
-
+#pragma mark -video preview delegate
+- (void)resetVideo{
+    [_videoPreview removeFromSuperview];
+    [self reset];
+}
+- (void)confirmVideo{
+    [_videoPreview removeFromSuperview];
+    [self reset];
+    if (_needCompress) {
+        //压缩并保存压缩后的视频到手机相册
+        VideoCompress *compress = [[VideoCompress alloc] init];
+        [compress VideoCompress:[AVAsset assetWithURL:self.videoUrl] needToSavedPhotosAlbum:_needToSavedPhotosAlbum presetName:nil];
+        compress.compressionCompletedBlock = ^(NSURL * url){
+            [self finishCompress:url];
+            [[NSFileManager defaultManager] removeItemAtPath:self.videoUrl.path error:nil];
+        };
+        compress.compressionFailedBlock = ^{
+            NSLog(@"视频压缩失败");
+        
+        };
+    }else{
+        [self finishCompress:self.videoUrl];
+    }
+}
+-(void)finishCompress:(NSURL *)videoUrl{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(recordFinishWithvideoUrl:)]) {
+        [self.delegate recordFinishWithvideoUrl:videoUrl];
+    }
+}
 @end

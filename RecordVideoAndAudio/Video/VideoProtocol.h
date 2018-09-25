@@ -38,12 +38,12 @@ typedef NS_ENUM(NSInteger, VideoViewType) {
 - (void)endMerge:(NSURL *)url;
 - (void)updateRecordingProgress:(CGFloat)progress;
 - (void)updateRecordState:(RecordState)recordState;
+///停止录制视频
+- (void)recordFinshed:(NSURL *)url;
 
 #pragma mark - AR Video Record
 ///开始录制视频
 - (void)recordBegined;
-///停止录制视频
-- (void)recordFinshed;
 
 #pragma mark - Video Record
 
